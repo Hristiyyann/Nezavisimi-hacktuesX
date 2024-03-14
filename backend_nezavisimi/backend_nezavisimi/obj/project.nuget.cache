@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eXwCzqx+6TrOpMTDO5F0E2CE1LfTAHQu6pbcjpHBG6KIrTi9AoUUgJjRsOiZHhFaNci8UYN5WurE/UtUXW44LA==",
+  "dgSpecHash": "uFy+GCjapfQyA2/wW+3bjOPTERZZS2aJaRf0W5EbuymjRbqso4lGwtW2EvsGL5kelFNZfKosev/UEnvlszYxJw==",
   "success": true,
-  "projectFilePath": "/Users/hristoff/Downloads/JWTAuthentication.NET6.0/backend_nezavisimi/backend_nezavisimi.csproj",
+  "projectFilePath": "/Users/hristoff/Documents/GitHub/Nezavisimi-hacktuesX/backend_nezavisimi/backend_nezavisimi/backend_nezavisimi.csproj",
   "expectedPackageFiles": [
     "/Users/hristoff/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/Users/hristoff/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/6.0.1/microsoft.aspnetcore.authentication.jwtbearer.6.0.1.nupkg.sha512",
