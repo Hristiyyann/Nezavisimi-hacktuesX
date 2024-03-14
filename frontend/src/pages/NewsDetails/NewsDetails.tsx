@@ -1,18 +1,15 @@
 import NewsCardsList from "components/NewsCardsList/NewsCardsList";
-import Search from "../../components/Search/Search";
-import classes from './style.module.less';
-import Tags from "components/Tags/Tags";
 import Profile from "components/Profile/Profile";
+import SearchTabs from "components/SearchTabs/SearchTabs";
+import classes from './style.module.less';
 
 function NewsDetails() {
     return (
         <div className = {classes.container}>
             <Profile/>
 
-            <Search/>
-            
-            <Tags/>
-            
+            <SearchTabs/>
+
             <NewsCardsList/>
 
         </div>
