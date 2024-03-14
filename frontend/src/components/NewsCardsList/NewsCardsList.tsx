@@ -1,4 +1,4 @@
-import NewsCard from "pages/NewsDetails/components/NewsCard";
+import NewsCard from "components/NewsCard/NewsCard";
 import classes from './style.module.less';
 
 function NewsCardsList() {
