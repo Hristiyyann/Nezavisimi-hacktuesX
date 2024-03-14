@@ -1,4 +1,5 @@
 import { Progress } from 'antd';
+import classes from './style.module.less';
 
 type PartyStatsProps = {
     name: string;
@@ -7,14 +8,18 @@ type PartyStatsProps = {
 }
 
 function PartyStats({ name, color, percentage }: PartyStatsProps) {
-    console.log('vliza')
     return (
         <div style = {{ width: 300 }}>
-            <span>{name}</span>
+            <span
+                className = {classes.label}
+                style = {{ color }}
+            >
+                {name}
+            </span>
 
             <Progress
                 percent = {percentage}
-                style = {{ color }}
+                strokeColor = {color}
             />
         </div>
     )
