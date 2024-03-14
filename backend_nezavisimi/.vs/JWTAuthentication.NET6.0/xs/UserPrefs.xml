@@ -1,0 +1,30 @@
+﻿<Properties StartupConfiguration="{5F182079-0CDB-40A1-97F8-EBB936FC48C4}|Default">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.JWTAuthentication.NET6.0 PreferredExecutionTarget="/Applications/Google Chrome 2.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="JWTAuthentication.NET6.0/appsettings.json">
+    <Files>
+      <File FileName="JWTAuthentication.NET6.0/Controllers/AuthenticateController.cs" Line="1" Column="1" />
+      <File FileName="JWTAuthentication.NET6.0/Controllers/WeatherForecastController.cs" Line="1" Column="1" />
+      <File FileName="JWTAuthentication.NET6.0/Program.cs" Line="1" Column="1" />
+      <File FileName="JWTAuthentication.NET6.0/appsettings.json" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="JWTAuthentication.NET6.0" expanded="True">
+            <Node name="JWTAuthentication.NET6.0" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="Migrations" expanded="True" />
+              <Node name="appsettings.json" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>
