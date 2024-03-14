@@ -1,0 +1,53 @@
+@import (reference) 'styles/theme.less';
+
+.container {
+    width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    gap: @gap-sm;
+    padding: @padding-md @padding-lg;
+    box-shadow: @shadow-2;
+    border-radius: @border-radius-base;
+    transition: 0.5s all;
+}
+
+.container:hover {
+    box-shadow: @shadow-3;
+}
+
+.detailsContainer {
+    display: flex;
+    gap: 15px;
+}
+
+.values {
+    display: flex;
+    flex-direction: column;
+    gap: @gap-lg;
+
+    .label {
+        font-size: @font-size-base;
+    }
+
+    .value {
+        font-size: @font-size-sm;
+    }
+
+    .link {
+        font-size: @font-size-sm;
+        color: @primary-color;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 500px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .container {
+        width: 650px;
+    }
+}
+  
