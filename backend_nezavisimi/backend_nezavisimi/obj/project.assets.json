@@ -2605,11 +2605,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/hristoff/Downloads/JWTAuthentication.NET6.0/backend_nezavisimi/backend_nezavisimi.csproj",
+      "projectUniqueName": "/Users/hristoff/Documents/GitHub/Nezavisimi-hacktuesX/backend_nezavisimi/backend_nezavisimi/backend_nezavisimi.csproj",
       "projectName": "backend_nezavisimi",
-      "projectPath": "/Users/hristoff/Downloads/JWTAuthentication.NET6.0/backend_nezavisimi/backend_nezavisimi.csproj",
+      "projectPath": "/Users/hristoff/Documents/GitHub/Nezavisimi-hacktuesX/backend_nezavisimi/backend_nezavisimi/backend_nezavisimi.csproj",
       "packagesPath": "/Users/hristoff/.nuget/packages/",
-      "outputPath": "/Users/hristoff/Downloads/JWTAuthentication.NET6.0/backend_nezavisimi/obj/",
+      "outputPath": "/Users/hristoff/Documents/GitHub/Nezavisimi-hacktuesX/backend_nezavisimi/backend_nezavisimi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/hristoff/.nuget/NuGet/NuGet.Config"
