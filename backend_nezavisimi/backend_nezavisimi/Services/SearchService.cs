@@ -1,7 +1,7 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
-using Newtonsoft.Json.Schema;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
@@ -37,24 +37,25 @@ public class SearchService : ISearchService
         }
         else
         {
-            //var noviniBg = SearchNoviniBg(driver,3,searchParameters);
-            // foreach (var news in noviniBg)
-            // {
-            //     if (news.Link != null)
-            //     {
-            //         var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
-            //         newsModel.Add(articleToAdd);
-            //     }
-            // }
-            //var pikBg = SearchPikBg(driver,3,searchParameters);
-            // foreach (var news in pikBg)
-            // {
-            //     if (news.Link != null)
-            //     {
-            //         var articleToAdd = TextExtractPikBg(driver, news.Link);
-            //         newsModel.Add(articleToAdd);
-            //     }
-            // }
+            // var noviniBg = SearchNoviniBg(driver,3,searchParameters);
+            //  foreach (var news in noviniBg)
+            //  {
+            //      if (news.Link != null)
+            //      {
+            //          var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+            //          newsModel.Add(articleToAdd);
+            //      }
+            //  }
+            // var pikBg = SearchPikBg(driver,3,searchParameters);
+            //  foreach (var news in pikBg)
+            //  {
+            //      if (news.Link != null)
+            //      {
+            //          var articleToAdd = ExtractTextPikBg(driver, news.Link);
+            //          newsModel.Add(articleToAdd);
+            //      }
+            //  }
+            // kupuvaite samo ot fast frog
             var frogNews = SearchFrogNews(driver, 3, searchParameters);
             foreach (var news in frogNews)
             {
@@ -65,6 +66,32 @@ public class SearchService : ISearchService
                 }
             }
         }
+        
+        foreach (var news in newsModel)
+        {
+            string tempFilePath = Path.GetTempFileName();
+            File.WriteAllText(tempFilePath, news.Text);
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "python3",
+                    Arguments = $"../../model/evaluate.py \"{tempFilePath}\"", 
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+
+            string result = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+
+            File.Delete(tempFilePath);
+        }
+
         
         return newsModel;
     }
@@ -104,9 +131,7 @@ public class SearchService : ISearchService
         driver.Url = "https://novini.bg/search?txt=" + searchParameters;
         var newsModels = new List<NewsModel>(); 
         Thread.Sleep(1000);
-
-        IWebElement buttonToAcceptCookies = driver.FindElement(By.XPath("//*[@id=\"onetrust-accept-btn-handler\"]"));
-        buttonToAcceptCookies.Click();
+        
         for (int i = 0; i < numberOfArticles; i++)
         {
             var articleCss = "article.g-grid__item:nth-child(" + (i + 1) + ")";
@@ -132,7 +157,7 @@ public class SearchService : ISearchService
         if (isUrl)
         {
             var newsModelUrl = new List<NewsModel>();
-            var articleToAdd = TextExtractPikBg(driver, searchParameters);
+            var articleToAdd = ExtractTextPikBg(driver, searchParameters);
             newsModelUrl.Add(articleToAdd);
             return newsModelUrl;
         }
@@ -140,9 +165,7 @@ public class SearchService : ISearchService
         driver.Url = "https://pik.bg/" + searchParameters.Replace(" ", "-") + "-search.html";
         var newsModels = new List<NewsModel>(); 
         Thread.Sleep(1000);
-        
-        IWebElement buttonToAcceptCookies = driver.FindElement(By.XPath("//*[@id=\"qc-cmp2-ui\"]/div[2]/div/button[2]"));
-        buttonToAcceptCookies.Click();
+
         for (int i = 0; i < numberOfArticles; i++)
         {
             var articleCss = "body > main > div.container-wrap > div > div > div.left.w100.mt30 > div > div.col-lg-9 > div > div:nth-child(1) > div:nth-child(" + (i + 2) + ")";
@@ -241,7 +264,7 @@ public class SearchService : ISearchService
        return articleToAdd;
    }
    
-   private NewsModel TextExtractPikBg(IWebDriver driver, string searchParameters)
+   private NewsModel ExtractTextPikBg(IWebDriver driver, string searchParameters)
    {
        driver.Url = searchParameters;
        Thread.Sleep(1000);
@@ -279,14 +302,11 @@ public class SearchService : ISearchService
        driver.Url = searchParameters;
        Thread.Sleep(1000);  // Consider using WebDriverWait for more reliable synchronization
 
-       // Fetching the title
        var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1")).Text;
        var titleSpan = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1 > span")).Text; // Combining title parts
 
-       // Fetching the photo URL
        var articlePhoto = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-share > div.article-image-blk > img")).GetAttribute("src");
 
-       // Article text extraction logic
        var articleContainer = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-full-text-area > div.article-full-text"));
        var paragraphs = articleContainer.FindElements(By.TagName("p"));
 
@@ -296,10 +316,8 @@ public class SearchService : ISearchService
            articleContent.Add(paragraph.Text);
        }
 
-       // Concatenating paragraph texts to form the full article text
        string fullArticleText = string.Join("\n", articleContent);
 
-       // Constructing the NewsModel with the fetched data
        var articleToAdd = new NewsModel()
        {
            Title = articleTitle,

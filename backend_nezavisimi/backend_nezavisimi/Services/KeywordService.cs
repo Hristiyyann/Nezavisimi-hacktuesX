@@ -18,7 +18,7 @@ public class KeywordService : IKeywordService
         return _context.Keywords.Where(x => x.UserId == userId).ToListAsync();
     }
     
-    public Task<int> AddKeyword(string userId, string keyword)
+    public Task<Keyword> AddKeyword(string userId, string keyword)
     {
         var newKeyword = new Keyword
         {
@@ -26,7 +26,8 @@ public class KeywordService : IKeywordService
             UserId = userId
         };
         _context.Keywords.Add(newKeyword);
-        return _context.SaveChangesAsync();
+        _context.SaveChangesAsync();
+        return Task.FromResult(newKeyword);
     }
     
     public Task<int> DeleteKeyword(string userId, string keyword)
