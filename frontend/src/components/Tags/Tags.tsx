@@ -3,7 +3,7 @@ import { Tag } from 'antd';
 
 function Tags() {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const keywords = ['app', 'bsp', 'gerb', 'promqna'];
+    const keywords = ['app', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds'];
 
     const handleTagChange = (checked: boolean, tag: string) => {
         setSelectedTags(prev => {
