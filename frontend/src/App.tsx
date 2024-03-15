@@ -4,6 +4,7 @@ import Context from 'contexts/AppContext';
 import { useEffect, useState } from 'react';
 import './styles/App.less';
 import componentConfiguration from 'styles/UIConfiguration';
+import Navbar from 'components/Navbar/Navbar';
 
 const colorPrimary = '#50C7C7';
 

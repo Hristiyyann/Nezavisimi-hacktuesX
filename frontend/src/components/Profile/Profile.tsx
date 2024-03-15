@@ -36,6 +36,7 @@ function Profile() {
                 <Avatar
                     size = {50}
                     className = {classes.avatar}
+                    style = {{ background: '#D9D9D9' }}
                 >
                     {initials}
                 </Avatar>

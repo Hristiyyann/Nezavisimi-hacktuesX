@@ -1,0 +1,42 @@
+@import (reference) 'styles/theme.less';
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    padding: 10px 25px;
+    background-color: #143F68;
+}
+
+.nameContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: @gap-md;
+    color: white;
+    font-size: 35px;
+    font-family: Abhaya Libre SemiBold;
+
+    img {
+        width: 70px;
+    }
+}
+
+.unauthorizedLinks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: @gap-md;
+
+    .link {
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.5s all;
+    }
+
+    .link:hover {
+        color: #D9D9D9;
+    }
+}

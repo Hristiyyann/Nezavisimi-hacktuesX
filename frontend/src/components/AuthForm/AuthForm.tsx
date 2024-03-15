@@ -1,5 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import classes from './style.module.less';
+import Navbar from 'components/Navbar/Navbar';
 
 type AuthFormProps = {
     type: 'sign-in' | 'sign-up';
@@ -26,6 +27,8 @@ function AuthForm({ type }: AuthFormProps) {
 
     return (
         <div className = {classes.formContainer}>
+            <Navbar />
+
             <Form
                 form = {form}
                 layout = 'vertical'
