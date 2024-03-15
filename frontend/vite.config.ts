@@ -10,7 +10,8 @@ export default defineConfig({
         contexts: '/src/contexts',
         hooks: '/src/hooks',
         pages: '/src/pages',
-        styles: '/src/styles'
+        styles: '/src/styles',
+        utils: '/src/utils',
       },
     },
     css: {
