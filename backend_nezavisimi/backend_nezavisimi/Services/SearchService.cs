@@ -11,7 +11,10 @@ public class SearchService : ISearchService
 {
     public List<NewsModel> SearchArticles(string searchParameters)
     {
-        IWebDriver driver = new FirefoxDriver();
+        FirefoxOptions options = new FirefoxOptions();
+        options.SetPreference("javascript.enabled", false);
+        IWebDriver driver = new FirefoxDriver(options);
+        
         var newsModel = new List<NewsModel>();
 
         bool isUrl = IsUrl(searchParameters);
@@ -34,25 +37,33 @@ public class SearchService : ISearchService
         }
         else
         {
-            var noviniBg = SearchNoviniBg(driver,3,searchParameters);
-            foreach (var news in noviniBg)
-            {
-                if (news.Link != null)
-                {
-                    var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
-                    newsModel.Add(articleToAdd);
-                }
-            }
-            var pikBg = SearchPikBg(driver,3,searchParameters);
-            foreach (var news in pikBg)
-            {
-                if (news.Link != null)
-                {
-                    var articleToAdd = TextExtractPikBg(driver, news.Link);
-                    newsModel.Add(articleToAdd);
-                }
-            }
+            //var noviniBg = SearchNoviniBg(driver,3,searchParameters);
+            // foreach (var news in noviniBg)
+            // {
+            //     if (news.Link != null)
+            //     {
+            //         var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+            //         newsModel.Add(articleToAdd);
+            //     }
+            // }
+            //var pikBg = SearchPikBg(driver,3,searchParameters);
+            // foreach (var news in pikBg)
+            // {
+            //     if (news.Link != null)
+            //     {
+            //         var articleToAdd = TextExtractPikBg(driver, news.Link);
+            //         newsModel.Add(articleToAdd);
+            //     }
+            // }
             var frogNews = SearchFrogNews(driver, 3, searchParameters);
+            foreach (var news in frogNews)
+            {
+                if (news.Link != null)
+                {
+                    var articleToAdd = ExtractTextFrogNews(driver, news.Link);
+                    newsModel.Add(articleToAdd);
+                }
+            }
         }
         
         return newsModel;
@@ -158,7 +169,7 @@ public class SearchService : ISearchService
                     "&submitsearch=&action=search";
        var newsModels = new List<NewsModel>();
        Thread.Sleep(3000);
-
+       
        for (int i = 0; i < numberOfArticles; i++)
        {
            var articleCss =
@@ -263,36 +274,40 @@ public class SearchService : ISearchService
    }
 
 
-    private NewsModel ExtractTextFrogNews(IWebDriver driver, string searchParameters)
+   private NewsModel ExtractTextFrogNews(IWebDriver driver, string searchParameters)
    {
        driver.Url = searchParameters;
-       Thread.Sleep(1000);
+       Thread.Sleep(1000);  // Consider using WebDriverWait for more reliable synchronization
 
-       var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1"));
-       var titleSpan = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1 > span"));
-       var articlePhoto = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-share > div.article-image-blk > img"));
-       var articleTextContainer = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-full-text-area"));
-       var paragraphs = articleTextContainer.FindElements(By.TagName("p"));
-       string articleText = "";
-       var excludeKeywords = new List<string> { "WINBET","efbet", "Следвайте ПИК" };
-            
+       // Fetching the title
+       var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1")).Text;
+       var titleSpan = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1 > span")).Text; // Combining title parts
+
+       // Fetching the photo URL
+       var articlePhoto = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-share > div.article-image-blk > img")).GetAttribute("src");
+
+       // Article text extraction logic
+       var articleContainer = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-full-text-area > div.article-full-text"));
+       var paragraphs = articleContainer.FindElements(By.TagName("p"));
+
+       var articleContent = new List<string>();
        foreach (var paragraph in paragraphs)
        {
-           bool containsExcludeKeyword = excludeKeywords.Any(keyword => paragraph.Text.Contains(keyword));
+           articleContent.Add(paragraph.Text);
+       }
 
-           if (!containsExcludeKeyword)
-           {
-               articleText += paragraph.Text; 
-           }
-       }                
-            
+       // Concatenating paragraph texts to form the full article text
+       string fullArticleText = string.Join("\n", articleContent);
+
+       // Constructing the NewsModel with the fetched data
        var articleToAdd = new NewsModel()
        {
-           Title = titleSpan.text + articleTitle.Text,
+           Title = articleTitle,
            Link = searchParameters,
-           Photo = articlePhoto.GetAttribute("src"),
-           Text = articleText
+           Photo = articlePhoto,
+           Text = fullArticleText
        };
+
        return articleToAdd;
    }
    #endregion
