@@ -5,8 +5,11 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
       alias: {
-        pages: '/src/pages',
+        assets: '/src/assets',
         components: '/src/components',
+        contexts: '/src/contexts',
+        hooks: '/src/hooks',
+        pages: '/src/pages',
         styles: '/src/styles'
       },
     },
