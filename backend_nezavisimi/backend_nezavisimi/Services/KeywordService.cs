@@ -18,30 +18,37 @@ public class KeywordService : IKeywordService
         return _context.Keywords.Where(x => x.UserId == userId).ToListAsync();
     }
     
-    public Task<int> AddKeyword(string userId, KeywordModel keyword)
+    public Task<int> AddKeyword(string userId, string keyword)
     {
         var newKeyword = new Keyword
         {
-            Name = keyword.Keyword,
+            Name = keyword,
             UserId = userId
         };
         _context.Keywords.Add(newKeyword);
         return _context.SaveChangesAsync();
     }
     
-    public Task<Keyword> DeleteKeyword(string userId, string keyword)
+    public Task<int> DeleteKeyword(string userId, string keyword)
     {
-        throw new NotImplementedException();
+        var keywordToDelete = _context.Keywords.FirstOrDefault(x => x.UserId == userId && x.Name == keyword);
+        if (keywordToDelete == null)
+        {
+            throw new Exception("Keyword not found");
+        }
+        _context.Keywords.Remove(keywordToDelete);
+        return _context.SaveChangesAsync();
     }
     
-    public Task<Keyword> GetKeyword(string userId, string keyword)
+    public Task<int> UpdateKeyword(string userId, KeywordModel keyword)
     {
-        throw new NotImplementedException();
-    }
-    
-    public Task<Keyword> UpdateKeyword(string userId, string keyword)
-    {
-        throw new NotImplementedException();
+        var keywordToUpdate = _context.Keywords.FirstOrDefault(x => x.UserId == userId && x.Id == keyword.Guid);
+        if (keywordToUpdate == null)
+        {
+            throw new Exception("Keyword not found");
+        }
+        keywordToUpdate.Name = keyword.Keyword;
+        return _context.SaveChangesAsync();
     }
     
 }
