@@ -243,5 +243,39 @@ public class SearchService : ISearchService
        };
        return articleToAdd;
    }
+
+
+    private NewsModel ExtractTextFrogNews(IWebDriver driver, string searchParameters)
+   {
+       driver.Url = searchParameters;
+       Thread.Sleep(1000);
+
+       var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1"));
+       var titleSpan = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1 > span"));
+       var articlePhoto = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-share > div.article-image-blk > img"));
+       var articleTextContainer = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-full-text-area"));
+       var paragraphs = articleTextContainer.FindElements(By.TagName("p"));
+       string articleText = "";
+       var excludeKeywords = new List<string> { "WINBET","efbet", "Следвайте ПИК" };
+            
+       foreach (var paragraph in paragraphs)
+       {
+           bool containsExcludeKeyword = excludeKeywords.Any(keyword => paragraph.Text.Contains(keyword));
+
+           if (!containsExcludeKeyword)
+           {
+               articleText += paragraph.Text; 
+           }
+       }                
+            
+       var articleToAdd = new NewsModel()
+       {
+           Title = titleSpan.text + articleTitle.Text,
+           Link = searchParameters,
+           Photo = articlePhoto.GetAttribute("src"),
+           Text = articleText
+       };
+       return articleToAdd;
+   }
    #endregion
 }
