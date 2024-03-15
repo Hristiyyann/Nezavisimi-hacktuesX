@@ -1,7 +1,7 @@
 import { ConfigProvider } from 'antd';
+import { Router } from 'components';
 import Context from 'contexts/AppContext';
 import { useEffect, useState } from 'react';
-import NewsDetails from './pages/NewsDetails/NewsDetails';
 import './styles/App.less';
 
 const colorPrimary = '#50C7C7';
@@ -28,7 +28,7 @@ function App() {
                     userName, setUserName
                 }}
             >
-                <NewsDetails/>
+                <Router/>
             </Context.Provider>
         </ConfigProvider>
     )
