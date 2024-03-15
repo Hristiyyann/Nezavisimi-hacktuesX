@@ -10,10 +10,7 @@ type PartyStatsProps = {
 function PartyStats({ name, color, percentage }: PartyStatsProps) {
     return (
         <div style = {{ width: 300 }}>
-            <span
-                className = {classes.label}
-                style = {{ color }}
-            >
+            <span className = {classes.label}>
                 {name}
             </span>
 
