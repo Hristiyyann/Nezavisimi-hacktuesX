@@ -10,30 +10,34 @@ type KeywordsModalProps = {
     onClose: () => void;
 }
 
-type RequestResponse = {
-    success: boolean;
-    result: Keyword
-}
-
 function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
     const [value, setValue] = useState<string>();
     const { performer, changeLoading } = useRequest({ 
         url: '/api/keyword',
         method: 'post'
     });
+    const { performer: deletePerformer } =  useRequest({ 
+        url: '/api/keyword',
+        method: 'delete'
+    });
+
     const { keywords, setKeywords } = useContext(AppContext);
     
     const handleAddKeyword = async () => {
-        const data = await performer({ keyword: value });
-        const response = data as RequestResponse;
+        const data = await performer<Keyword>({ keyword: value });
+        if (!data) return;
 
         setKeywords(prev => {
-            prev.push(response.result);
+            prev.push(data);
 
             return [...prev];
         });
         setValue(undefined);
     };
+
+    const handleDeleteKeyword = async (keyword: string) => {
+        await deletePerformer({ keyword });
+    }
 
     return (
         <Modal
@@ -63,6 +67,7 @@ function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
                         <Tag
                             key = {name}
                             closable
+                            onClose = {() => handleDeleteKeyword(name)}
                         >
                             {name}
                         </Tag>

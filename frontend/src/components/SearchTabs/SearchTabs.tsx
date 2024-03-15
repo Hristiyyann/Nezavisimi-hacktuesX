@@ -1,16 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tab from "./Tab/Tab";
 import classes from './style.module.less';
 import Search from "components/Search/Search";
 import Tags from "components/Tags/Tags";
+import useRequest from "hooks/useRequest";
 
 function SearchTabs() {
+    const [searchValue, setSearchValue] = useState<string>();
     const [activeTab, setActiveTab] = useState<'titleOrLink' | 'keywords'>('titleOrLink');
+    const { performer, getLoading } = useRequest({ url: `/api/search?SearchPreference=${searchValue}`, method: 'get' });
+
+    useEffect(() => {
+        if (!searchValue) return;
+
+        setSearchValue(undefined);
+    }, [activeTab]);
+
+    const handleSearch = async () => {
+        if (!searchValue) return;
+        const data = await performer();
+
+        console.log(data);
+    }
 
     const getTabComponent = () => {
-        if (activeTab === 'titleOrLink') return <Search/>;
+        if (activeTab === 'titleOrLink') {
+            return (
+                <Search {...{ setSearchValue, searchValue, handleSearch }}/>
+            )
+        } 
 
-        return <Tags/>
+        return <Tags {...{ searchValue, setSearchValue, handleSearch }}/>
     }
 
     return (

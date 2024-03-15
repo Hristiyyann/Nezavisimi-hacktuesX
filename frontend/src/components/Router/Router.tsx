@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 
 function Router() {
     const { accessToken } = useContext(AppContext);
-    console.log(!accessToken)
+
 	return (
 		<BrowserRouter>
             <Routes>

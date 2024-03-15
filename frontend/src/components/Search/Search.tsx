@@ -1,21 +1,20 @@
 import { Input } from 'antd';
 import classes from './style.module.less';
-import { useState } from 'react';
 
 const { Search: SearchComponent } = Input;
 
-function Search() {
-    const [value, setValue] = useState<string>();
+type SearchProps = {
+    searchValue: string | undefined;
+    setSearchValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+    handleSearch: () => Promise<void>;
+}
 
-    async function handleSearch() {
-        console.log(value);
-    }
-
+function Search({ searchValue, setSearchValue, handleSearch }: SearchProps) {
     return (
         <div className = {classes.container}>
             <SearchComponent
-                value = {value}
-                onChange = {event => setValue(event.target.value)}
+                value = {searchValue}
+                onChange = {event => setSearchValue(event.target.value)}
                 style = {{ width: 400 }}
                 onSearch = {handleSearch}
             />

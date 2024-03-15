@@ -8,7 +8,7 @@
     gap: @gap-sm;
     padding: @padding-md @padding-lg;
     box-shadow: @shadow-2;
-    border-radius: @border-radius-base;
+    border-radius: 10px;
     transition: 0.5s all;
 }
 
@@ -25,13 +25,15 @@
     display: flex;
     flex-direction: column;
     gap: @gap-lg;
+    color: @text-color;
 
     .label {
-        font-size: @font-size-base;
+        font-size: @font-size-lg;
+        color: @main-color;
     }
 
     .value {
-        font-size: @font-size-sm;
+        font-size: @font-size-base;
     }
 
     .link {

@@ -1,10 +1,10 @@
 import { Button, Form, Input } from 'antd';
+import AppContext from 'contexts/AppContext';
 import NavbarContext from 'contexts/NavbarContext';
-import classes from './style.module.less';
 import useRequest from 'hooks/useRequest';
 import { useContext } from 'react';
-import AppContext from 'contexts/AppContext';
 import { useNavigate } from 'react-router';
+import classes from './style.module.less';
 
 type AuthFormProps = {
     type: 'sign-in' | 'sign-up';
@@ -17,12 +17,9 @@ type FormValues = {
     password: string;
 }
 
-type RequestResponse = {
-    success: boolean;
-    result: {
-        expiration: string;
-        token: string;
-    }
+type Response = {
+    expiration: string;
+    token: string;   
 }
 
 function AuthForm({ type }: AuthFormProps) {
@@ -47,11 +44,11 @@ function AuthForm({ type }: AuthFormProps) {
     );
 
     const handleFinish = async (values: FormValues) => {
-        const data = await performer(values);
-        const response = data as RequestResponse;
+        const data = await performer<Response>(values);
+        if (!data) return;
 
-        window.localStorage.setItem('accessToken', response.result.token);
-        setAccessToken(response.result.token);
+        window.localStorage.setItem('accessToken', data.token);
+        setAccessToken(data.token);
         navigate('/news');
     }
 

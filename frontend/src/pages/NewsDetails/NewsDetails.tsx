@@ -8,10 +8,6 @@ import { useNavigate } from "react-router";
 import { Keyword } from "types";
 import classes from './style.module.less';
 
-type RequestResponse = {
-    success: boolean;
-    result: Keyword[];
-}
 
 function NewsDetails() {
     const { performer } = useRequest({ url: '/api/keyword', method: 'get' });
@@ -26,10 +22,10 @@ function NewsDetails() {
     useEffect(() => { fetchUserKeywords(); }, []);
 
     const fetchUserKeywords = async () => {
-        const data = await performer();
-        const response = data as RequestResponse;
-        console.log(response)
-        setKeywords(response.result);
+        const data = await performer<Keyword[]>();
+        if (!data) return;
+
+        setKeywords(data);
     }
 
     return (
