@@ -1,8 +1,8 @@
 import { Avatar, Dropdown } from 'antd';
-import classes from './style.module.less';
-import { useContext, useMemo, useState } from 'react';
 import KeywordsModal from 'components/KeywordsModal/KeywordsModal';
 import AppContext from 'contexts/AppContext';
+import { useContext, useMemo, useState } from 'react';
+import classes from './style.module.less';
 
 function Profile() {
     const { userName } = useContext(AppContext);

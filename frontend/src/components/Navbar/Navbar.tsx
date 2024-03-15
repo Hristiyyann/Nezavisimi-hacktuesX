@@ -3,10 +3,11 @@ import classes from './style.module.less';
 import newspaper from 'assets/newspaper.png';
 import AppContext from 'contexts/AppContext';
 import { Profile } from 'components';
-
+import { useNavigate } from 'react-router';
 
 function Navbar() {
-    const { accessToken } = useContext(AppContext)
+    const { accessToken } = useContext(AppContext);
+    const navigate = useNavigate();
     
     return (
         <div className = {classes.navbar}>
@@ -25,8 +26,19 @@ function Navbar() {
             </div>
             : 
             <div className = {classes.unauthorizedLinks}>
-                <span className = {classes.link}>Вход</span>
-                <span className = {classes.link}>Регистрация</span>
+                <span
+                    onClick = {() => navigate('/sign-in')} 
+                    className = {classes.link}
+                >
+                    Вход
+                </span>
+
+                <span 
+                    className = {classes.link}
+                    onClick = {() => navigate('/sign-up')} 
+                >
+                    Регистрация
+                </span>
             </div>
         }
         </div>

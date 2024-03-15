@@ -1,2 +1,25 @@
 @import (reference) 'styles/theme.less';
 
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.innerContainer {
+    display: flex;
+    flex-direction: column;
+    gap: @gap-md;
+}
+
+.submitButton {
+    align-self: flex-end;
+}
+
+.title {
+    align-self: flex-start;
+    font-size: 35px;
+    color: @text-color;
+}
