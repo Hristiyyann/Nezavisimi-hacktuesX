@@ -1,3 +1,4 @@
+using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,9 +16,9 @@ namespace backend_nezavisimi.Controllers
         }
         
         [HttpPost]
-        public Task<IActionResult> Search([FromBody]string model)
+        public Task<IActionResult> Search([FromBody]SearchModel model)
         {
-            var result = _searchService.SearchArticles(model);
+            var result = _searchService.SearchArticles(model.SearchPreference);
             return Task.FromResult<IActionResult>(Ok(result));
         }
 

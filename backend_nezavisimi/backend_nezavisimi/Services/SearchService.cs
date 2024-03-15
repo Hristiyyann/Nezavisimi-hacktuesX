@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
@@ -86,6 +88,17 @@ public class SearchService : ISearchService
             process.Start();
 
             string result = process.StandardOutput.ReadToEnd();
+            string jsonString = result.Substring(result.IndexOf('\n') + 1)
+                .Replace('\'', '\"');
+            try
+            {
+                var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+                news.Scores = evaluationResult["scores"].ToObject<Dictionary<string,float>>();
+            }
+            catch (JsonReaderException e)
+            {
+                
+            }
             process.WaitForExit();
 
 

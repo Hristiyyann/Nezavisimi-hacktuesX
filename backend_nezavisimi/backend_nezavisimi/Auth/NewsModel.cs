@@ -6,4 +6,5 @@ public class NewsModel
     public string? Link { get; set; }
     public string? Photo { get; set; }
     public string? Text { get; set; }
+    public Dictionary<string,float> Scores { get; set; }
 }
