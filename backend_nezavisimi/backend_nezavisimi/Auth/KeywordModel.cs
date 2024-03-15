@@ -4,5 +4,4 @@ public class KeywordModel
 {
     public Guid? Guid { get; set; } 
     public string? Keyword { get; set; }
-    public string? UserId { get; set; }
 }

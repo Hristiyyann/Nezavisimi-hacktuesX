@@ -60,8 +60,14 @@ namespace backend_nezavisimi.Controllers
             return Ok(result);
         }
         
-        
-        
-        
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateKeyword([FromBody] KeywordModel keyword)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var result = await _keywordService.UpdateKeyword(user.Id, keyword);
+            
+            return Ok(result);
+        }
     }
 }
