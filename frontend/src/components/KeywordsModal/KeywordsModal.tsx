@@ -57,7 +57,7 @@ function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
                     onPressEnter = {handleAddKeyword}
                 />
                 
-                <div className = {classes.keywords}>
+                <div className = 'keywords'>
                 {
                     keywords.map(({ name }) => 
                         <Tag

@@ -1,0 +1,17 @@
+@import (reference) 'styles/theme.less';
+
+.container {
+    font-size: 25px;
+    color: @text-color;
+    cursor: pointer;
+    transition: 0.3s all;
+    border-bottom: 2.5px solid transparent;
+}
+
+.container:hover {
+    opacity: 0.5;
+}
+
+.activeTab {
+    border-bottom: 2.5px solid @main-color;
+}

@@ -16,6 +16,9 @@ const componentConfiguration = {
         defaultShadow: '0',
         dangerShadow: '0'
     },
+    Tag: {
+        defaultColor: '#4A4D4E'
+    }
 }
 
 export default componentConfiguration;

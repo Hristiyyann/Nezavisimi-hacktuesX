@@ -10,7 +10,7 @@ function useRequest({ url, method }: useRequestProps) {
     const [getLoading, setGetLoading] = useState(true);
     const [changeLoading, setChangeLoading] = useState(false);
 
-    const performer = async (body: any) => {
+    const performer = async (body?: any) => {
         method !== 'get' && setChangeLoading(true);
 
         try {

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Tag } from 'antd';
+import AppContext from 'contexts/AppContext';
 
 function Tags() {
+    const { keywords } = useContext(AppContext);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const keywords = ['app', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds', 'bsp', 'gerb', 'promqna', 'lsds'];
 
     const handleTagChange = (checked: boolean, tag: string) => {
         setSelectedTags(prev => {
@@ -16,15 +17,15 @@ function Tags() {
     }
 
     return (
-        <div>
+        <div className = 'keywords'>
         {
-            keywords.map(keyword => 
+            keywords.map(({ id, name }) => 
                 <Tag.CheckableTag
-                    key = {keyword}
-                    checked = {selectedTags.includes(keyword)}
-                    onChange = {checked => handleTagChange(checked, keyword)}
+                    key = {id}
+                    checked = {selectedTags.includes(name)}
+                    onChange = {checked => handleTagChange(checked, name)}
                 >
-                    {keyword}
+                    {name}
                 </Tag.CheckableTag>
             )
         }

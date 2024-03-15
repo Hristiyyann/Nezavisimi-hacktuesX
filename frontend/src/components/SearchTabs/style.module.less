@@ -3,10 +3,22 @@
 .tabsContainer {
     display: flex;
     flex-direction: column;
-    width: 350px;
+    gap: @gap-md;
+}
+
+.options {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: @gap-sm;
 }
 
 .label {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 65px;
+    color: @text-color;
+
+    .newsLabel {
+        color: @main-color;
+    }
 }

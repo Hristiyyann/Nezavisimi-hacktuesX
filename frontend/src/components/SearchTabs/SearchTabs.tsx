@@ -1,36 +1,41 @@
-import { useMemo, useState } from "react";
-import { Tabs, type TabsProps } from 'antd';
+import { useState } from "react";
+import Tab from "./Tab/Tab";
+import classes from './style.module.less';
 import Search from "components/Search/Search";
 import Tags from "components/Tags/Tags";
-import classes from './style.module.less';
 
 function SearchTabs() {
-    const [activeTab, setActiveTab] = useState('titleOrLink');
+    const [activeTab, setActiveTab] = useState<'titleOrLink' | 'keywords'>('titleOrLink');
 
-    const tabs: TabsProps['items'] = useMemo(() => ([
-        {
-            key: 'titleOrLink',
-            label: 'Заглавие или линк',
-            children: <Search/>
-        },
-        {
-            key: 'keywords',
-            label: 'Вашите ключови думи',
-            children: <Tags/>
-        },
-    ]), []);
+    const getTabComponent = () => {
+        if (activeTab === 'titleOrLink') return <Search/>;
+
+        return <Tags/>
+    }
 
     return (
         <div className = {classes.tabsContainer}>
-            <div className = {classes.label}>Търсене по:</div>
+            <div className = {classes.label}>
+                Търси за <span className = {classes.newsLabel}>новини</span> по:
+            </div>
 
-            <Tabs
-                defaultActiveKey = {activeTab}
-                items = {tabs}
-                onChange = {key => setActiveTab(key)}
-            >
+            <div className = {classes.options}>
+                <Tab 
+                    text = "Заглавие или линк"
+                    onClick = {() => setActiveTab('titleOrLink')}
+                    isActive = {activeTab === 'titleOrLink'}
+                />
 
-            </Tabs>
+                <Tab
+                    text  = "Ключови думи"
+                    onClick = {() => setActiveTab('keywords')}
+                    isActive = {activeTab === 'keywords'}
+                />
+            </div>
+
+            <div style = {{ alignSelf: 'center' }}>
+                {getTabComponent()}
+            </div>
         </div>
     )
 }
