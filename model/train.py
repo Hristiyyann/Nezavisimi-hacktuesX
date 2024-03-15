@@ -99,9 +99,10 @@ def main():
         entries = os.scandir(party_folder)
         
         for entry in entries:
+            # if "programa" in entry.name:
             text = read_data_file(party_folder.name, entry.name)
             frequencies = update_frequencies_cumm(frequencies, text)
-        
+            
         #Function updates relatives every cycle
         relatives = frequencies_to_relatives_cumm(relatives, frequencies, party_folder.name)
     probabilities = relatives_to_probabilities(relatives)
