@@ -191,6 +191,7 @@ public class SearchService : ISearchService
        Thread.Sleep(3000);
 
        IWebElement articlePhoto = null;
+       var articleContent = new List<string>();
        var articleTitle = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > h1"));
        try
        {
@@ -201,13 +202,30 @@ public class SearchService : ISearchService
        catch (NoSuchElementException)
        { }
 
-       var articleText = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > section.openArticle__content.--spaced-bottom > p:nth-child(2)"));
+       var articleContainer = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > section.openArticle__content.--spaced-bottom"));
+       var paragraphs = articleContainer.FindElements(By.TagName("p"));
+       foreach (var paragraph in paragraphs)
+       {
+           if (!paragraph.FindElements(By.TagName("a")).Any(a => a.GetAttribute("href").Contains("whatsapp.com")) &&
+               !paragraph.GetAttribute("class").Contains("share") &&
+               !paragraph.GetAttribute("class").Contains("related_news"))
+           {
+               articleContent.Add(paragraph.Text);
+           }
+           else
+           {
+               break;
+           }
+       }
+       articleContent.Remove(articleContent.Last());
+       string fullArticleText = string.Join(null, articleContent);
+
        var articleToAdd = new NewsModel()
        {
            Title = articleTitle.Text,
            Link = searchParameters,
            Photo = articlePhoto?.GetAttribute("src"),
-           Text = articleText.Text
+           Text = fullArticleText
        };
        return articleToAdd;
    }
