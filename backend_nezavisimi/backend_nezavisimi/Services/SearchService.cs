@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
+using Newtonsoft.Json.Schema;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
@@ -34,17 +35,30 @@ public class SearchService : ISearchService
         else
         {
             var noviniBg = SearchNoviniBg(driver,3,searchParameters);
+            foreach (var news in noviniBg)
+            {
+                if (news.Link != null)
+                {
+                    var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+                    newsModel.Add(articleToAdd);
+                }
+            }
             var pikBg = SearchPikBg(driver,3,searchParameters);
+            foreach (var news in pikBg)
+            {
+                if (news.Link != null)
+                {
+                    var articleToAdd = TextExtractPikBg(driver, news.Link);
+                    newsModel.Add(articleToAdd);
+                }
+            }
             var frogNews = SearchFrogNews(driver, 3, searchParameters);
-            
-            newsModel.AddRange(noviniBg);
-            newsModel.AddRange(pikBg);
-            newsModel.AddRange(frogNews);
         }
         
         return newsModel;
     }
 
+    #region Utils
     public static bool IsUrl(string input)
     {
         string pattern = @"^(http|https|ftp)://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?$";
@@ -64,27 +78,15 @@ public class SearchService : ISearchService
             return false;
         }
     }
+    #endregion
 
+    #region NewsSearch
     private List<NewsModel> SearchNoviniBg(IWebDriver driver, int numberOfArticles, string searchParameters, bool isUrl = false)
     {
         if (isUrl)
         {
-            driver.Url = searchParameters;
             var newsModelUrl = new List<NewsModel>();
-            Thread.Sleep(1000);
-            IWebElement buttonToAcceptCookiesUrl = driver.FindElement(By.XPath("//*[@id=\"onetrust-accept-btn-handler\"]"));
-            buttonToAcceptCookiesUrl.Click();
-
-            var articleTitle = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > h1"));
-            var articlePhoto = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > div.--image_holder > picture > img"));
-            var articleText = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > section.openArticle__content.--spaced-bottom > p:nth-child(2)"));
-            var articleToAdd = new NewsModel()
-            {
-                Title = articleTitle.Text,
-                Link = searchParameters,
-                Photo = articlePhoto.GetAttribute("src"),
-                Text = articleText.Text
-            };
+            var articleToAdd = ExtractTextNoviniBg(driver, searchParameters);
             newsModelUrl.Add(articleToAdd);
             return newsModelUrl;
         }
@@ -114,45 +116,16 @@ public class SearchService : ISearchService
 
         return newsModels;
     }
-
     private List<NewsModel> SearchPikBg(IWebDriver driver, int numberOfArticles, string searchParameters, bool isUrl = false)
     {
         if (isUrl)
         {
-            driver.Url = searchParameters;
             var newsModelUrl = new List<NewsModel>();
-            Thread.Sleep(1000);
-            IWebElement buttonToAcceptCookiesUrl = driver.FindElement(By.XPath("//*[@id=\"qc-cmp2-ui\"]/div[2]/div/button[2]"));
-            buttonToAcceptCookiesUrl.Click();
-
-            var articleTitle = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > h2"));
-            var articlePhoto = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > picture > img"));
-            var articleTextContainer = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.news-detail.left.w100"));
-            var paragraphs = articleTextContainer.FindElements(By.TagName("p"));
-            string articleText = "";
-            var excludeKeywords = new List<string> { "WINBET","efbet", "Следвайте ПИК" };
-            
-            foreach (var paragraph in paragraphs)
-            {
-                bool containsExcludeKeyword = excludeKeywords.Any(keyword => paragraph.Text.Contains(keyword));
-
-                if (!containsExcludeKeyword)
-                {
-                    articleText += paragraph.Text; 
-                }
-            }                
-            
-            var articleToAdd = new NewsModel()
-            {
-                Title = articleTitle.Text,
-                Link = searchParameters,
-                Photo = articlePhoto.GetAttribute("src"),
-                Text = articleText
-            };
+            var articleToAdd = TextExtractPikBg(driver, searchParameters);
             newsModelUrl.Add(articleToAdd);
             return newsModelUrl;
         }
-        
+
         driver.Url = "https://pik.bg/" + searchParameters.Replace(" ", "-") + "-search.html";
         var newsModels = new List<NewsModel>(); 
         Thread.Sleep(1000);
@@ -186,17 +159,13 @@ public class SearchService : ISearchService
        var newsModels = new List<NewsModel>();
        Thread.Sleep(3000);
 
-       IWebElement buttonToAcceptCookies =
-           driver.FindElement(By.CssSelector("body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button"));
-       buttonToAcceptCookies.Click();
-
        for (int i = 0; i < numberOfArticles; i++)
        {
            var articleCss =
-               "body > div.content > div > div > div.search-news-left.brc > div > div.search-news-area > a.item.img5txt5.moretxt.num" +
-               (i + 1);
+               "a.img5txt5:nth-child(" +
+               (i + 1)+")";
            var articlePhotoCss =
-               "body > div.content > div > div > div.search-news-left.brc > div > div.search-news-area > a.item.img5txt5.moretxt.num" + (i+1) + " > span.plhldr > img";
+               "a.item:nth-child(" + (i+1)+") > span:nth-child(1) > img:nth-child(1)";
 
            var article = driver.FindElement(By.CssSelector(articleCss));
            var articlePhoto = driver.FindElement(By.CssSelector(articlePhotoCss));
@@ -212,4 +181,67 @@ public class SearchService : ISearchService
 
        return newsModels;
    }
+   #endregion
+
+   
+   #region textExtraction
+   private NewsModel ExtractTextNoviniBg(IWebDriver driver, string searchParameters)
+   {
+       driver.Url = searchParameters;
+       Thread.Sleep(3000);
+
+       IWebElement articlePhoto = null;
+       var articleTitle = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > h1"));
+       try
+       {
+           articlePhoto =
+               driver.FindElement(By.CssSelector(
+                   "body > div.main-wrapper > main > main > section > div > article > div.--image_holder > picture > img"));
+       }
+       catch (NoSuchElementException)
+       { }
+
+       var articleText = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > section.openArticle__content.--spaced-bottom > p:nth-child(2)"));
+       var articleToAdd = new NewsModel()
+       {
+           Title = articleTitle.Text,
+           Link = searchParameters,
+           Photo = articlePhoto?.GetAttribute("src"),
+           Text = articleText.Text
+       };
+       return articleToAdd;
+   }
+   
+   private NewsModel TextExtractPikBg(IWebDriver driver, string searchParameters)
+   {
+       driver.Url = searchParameters;
+       Thread.Sleep(1000);
+
+       var articleTitle = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > h2"));
+       var articlePhoto = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > picture > img"));
+       var articleTextContainer = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.news-detail.left.w100"));
+       var paragraphs = articleTextContainer.FindElements(By.TagName("p"));
+       string articleText = "";
+       var excludeKeywords = new List<string> { "WINBET","efbet", "Следвайте ПИК" };
+            
+       foreach (var paragraph in paragraphs)
+       {
+           bool containsExcludeKeyword = excludeKeywords.Any(keyword => paragraph.Text.Contains(keyword));
+
+           if (!containsExcludeKeyword)
+           {
+               articleText += paragraph.Text; 
+           }
+       }                
+            
+       var articleToAdd = new NewsModel()
+       {
+           Title = articleTitle.Text,
+           Link = searchParameters,
+           Photo = articlePhoto.GetAttribute("src"),
+           Text = articleText
+       };
+       return articleToAdd;
+   }
+   #endregion
 }
