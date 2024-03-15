@@ -1,0 +1,4 @@
+# Nezavisimi
+
+**Nezavisimi** is a news searching platform employing a word model to evaluate the probability that a certain news article employs a vocabulary specific for a given political party currently in the Bulgarian National Assembly. It is trained with data from official press releases, interviews, political programmes and social media publications by GERB, Vazrazhdane, BSP, PP-DB, DPS, ITN. The model is taken from the paper LAVER M, BENOIT K, GARRY J. Extracting Policy Positions from Political Texts Using Words as Data. American Political Science Review. 2003;97(2):311-331. doi:10.1017/S0003055403000698
+![Project components](9040_scheme.png)
