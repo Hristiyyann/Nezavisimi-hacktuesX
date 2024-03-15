@@ -3,6 +3,7 @@ import { Router } from 'components';
 import Context from 'contexts/AppContext';
 import { useEffect, useState } from 'react';
 import './styles/App.less';
+import componentConfiguration from 'styles/UIConfiguration';
 
 const colorPrimary = '#50C7C7';
 
@@ -19,7 +20,7 @@ function App() {
     return (
         <ConfigProvider
             componentSize = 'large'
-            theme = {{ token: { colorPrimary: '#50C7C7' }}}
+            theme = {{ token: { ...componentConfiguration, colorPrimary: '#50C7C7' }}}
         >
             <Context.Provider
                 value = {{ 
