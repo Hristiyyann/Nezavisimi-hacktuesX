@@ -18,13 +18,13 @@ function Router() {
                     <Route
                         path = '/sign-in'
                         element = {
-                            <AuthForm />
+                            <AuthForm type = 'sign-in' />
                         }
                     />
                     <Route
                         path = '/sign-up'
                         element = {
-                            <AuthForm />
+                            <AuthForm type = 'sign-up'/>
                         }
                     />
                 </>

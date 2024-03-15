@@ -1,7 +1,11 @@
 import os
 import sys
+import pathlib
+from math import sqrt
 
 EVALUATION_FILE = ""
+MODEL_FILE = "./model.csv"
+DATA_DIR = "./data/"
 
 def load_model(file):
     weights = {}
@@ -13,7 +17,7 @@ def load_model(file):
             if row[0] not in weights:
                 weights[row[0]] = {}
             c = 1
-            for p_f in os.scandir("data/"):
+            for p_f in os.scandir(DATA_DIR):
                 weights[row[0]][p_f.name] = float(row[c])
                 c += 1
             str = f.readline().strip("\n")
@@ -23,7 +27,7 @@ def load_model(file):
 def save_model(weights, file):
     with open(file, "w", encoding="utf-8") as f:
         f.write("word")
-        for party_folder in os.scandir("data/"):
+        for party_folder in os.scandir(DATA_DIR):
             f.write(", " + party_folder.name)
         f.write("\n")
         for key in weights:
@@ -49,20 +53,37 @@ def relative_frequency(text):
     return frequencies
 
 def evaluate(file):
+    result = {}
     text = ""
-    weights = load_model("model.csv")
+    weights = load_model(MODEL_FILE)
+    errors = {}
     with open(file, "r", encoding="utf-8") as f:
         text = f.read()
     frequencies = relative_frequency(text)
     scores = {}
-    for p_f in os.scandir("data/"):
+    for p_f in os.scandir(DATA_DIR):
+        errors[p_f.name] = 0
         scores[p_f.name] = 0
+        scored_words = 0
         for word in frequencies:
             if word in weights:
                 scores[p_f.name] += frequencies[word] / frequencies["#"] * weights[word][p_f.name]
-    return scores
+                scored_words += 1
+        for word in frequencies:
+            if word in weights:
+                errors[p_f.name] += frequencies[word] / frequencies["#"] * ((weights[word][p_f.name] - scores[p_f.name]) ** 2)
+        errors[p_f.name] = sqrt(errors[p_f.name]) / sqrt(scored_words)
+
+    result["scores"] = scores
+    result["errors"] = errors
+    return result
 
 if __name__ == "__main__":
+    print(sys.argv[0])
+    path = pathlib.Path(sys.argv[0])
+    folder = str(path.parent) + "/"
+    MODEL_FILE = folder + MODEL_FILE
+    DATA_DIR = folder + DATA_DIR
     if len(sys.argv) > 1:
         EVALUATION_FILE = sys.argv[1]
     else:
