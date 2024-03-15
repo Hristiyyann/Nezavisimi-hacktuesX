@@ -2,10 +2,6 @@ import os
 import sys
 
 EVALUATION_FILE = ""
-if len(sys.argv) > 1:
-    EVALUATION_FILE = sys.argv[1]
-else:
-    print("Please provide name of file for evaluation as argument")
 
 def load_model(file):
     weights = {}
@@ -52,10 +48,10 @@ def relative_frequency(text):
     frequencies['#'] = count
     return frequencies
 
-def main():
+def evaluate(file):
     text = ""
     weights = load_model("model.csv")
-    with open(EVALUATION_FILE, "r", encoding="utf-8") as f:
+    with open(file, "r", encoding="utf-8") as f:
         text = f.read()
     frequencies = relative_frequency(text)
     scores = {}
@@ -64,6 +60,12 @@ def main():
         for word in frequencies:
             if word in weights:
                 scores[p_f.name] += frequencies[word] / frequencies["#"] * weights[word][p_f.name]
-    print(scores)
+    return scores
 
-main()
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        EVALUATION_FILE = sys.argv[1]
+    else:
+        print("Please provide name of file for evaluation as argument")
+        exit
+    print(evaluate(EVALUATION_FILE))

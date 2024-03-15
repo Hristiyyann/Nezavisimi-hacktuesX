@@ -20,9 +20,8 @@ def save_model(weights, file):
                 f.write(", " + str(weights[key][party]))
             f.write("\n")
 
-def relative_frequency(text):
-    frequencies = {}
-    count = 0
+def update_frequencies_cumm(frequencies, text):
+    count = frequencies["#"]
     words = text.replace("\n", " ").split(' ')
     for w in words:
         #Strip special characters from words
@@ -41,46 +40,76 @@ def read_data_file(party_folder, file):
         text = f.read()
     return text
 
-def add_relative_frequencies(relatives, frequencies, party):
-    for key_word in frequencies:
-        if key_word not in relatives:
-            relatives[key_word] = {}
-        #Create dict entries for each party and null them
-        for p in parties:
-            if p not in relatives[key_word]:
-                relatives[key_word][p] = 0
-        #Computing relative frequency of each word
-        relatives[key_word][party] += frequencies[key_word] / frequencies["#"]
+def frequencies_to_relatives_cumm(relatives, party_frequencies, party):
+    for keyword in party_frequencies:
+        if keyword == "#":
+            continue
+        if keyword not in relatives:
+            relatives[keyword] = {}
+        relatives[keyword][party] = party_frequencies[keyword] / party_frequencies["#"]
     return relatives
 
-def add_probabilities(weights, relatives, party):
+def relatives_to_probabilities(relatives):
     global parties
+    probabilities = {}
     for keyword in relatives:
+        if keyword not in probabilities:
+            probabilities[keyword] = {}
+            for p in parties:
+                probabilities[keyword][p] = 0
+        
+        #Get Sum of Fwp
+        total_relative_frequency = 0
+        for p in relatives[keyword]:
+            total_relative_frequency += relatives[keyword][p]
+
+        #Divide each entry by the sum for the given keyword
+        for p in relatives[keyword]:
+            probabilities[keyword][p] = relatives[keyword][p] / total_relative_frequency
+
+    return probabilities
+
+def add_weights_cumm(weights, probabilities, party):
+    global parties
+    for keyword in probabilities:
         if keyword not in weights:
             weights[keyword] = {}
-            for p in parties:
+        for p in parties:
+            if p not in weights[keyword]:
                 weights[keyword][p] = 0
-        total_relative_frequency = 0
-        for p in weights[keyword]:
-            total_relative_frequency += relatives[keyword][p]
-        
-        weights[keyword][party] = relatives[keyword][party] / total_relative_frequency 
+
+        #Modify these lines to adjust weight of each party probability
+        for p in parties:
+            if p == party:
+                weights[keyword][party] += probabilities[keyword][p]
+            # else:
+            #     weights[keyword][party] -= probabilities[keyword][p]
     return weights
 
 def main():
     global weights
     global parties
     relatives = {}
+    probabilities = {}
+
     for party_folder in os.scandir("data/"):
+        frequencies = {}
+        frequencies["#"] = 0
+
         entries = os.scandir(party_folder)
+        
         for entry in entries:
             text = read_data_file(party_folder.name, entry.name)
-            frequencies = relative_frequency(text)
-            relatives = add_relative_frequencies(relatives, frequencies, party_folder.name)
+            frequencies = update_frequencies_cumm(frequencies, text)
+        
+        #Function updates relatives every cycle
+        relatives = frequencies_to_relatives_cumm(relatives, frequencies, party_folder.name)
+    probabilities = relatives_to_probabilities(relatives)
+    save_model(probabilities, "probabilities.csv")
     for party in parties:
-        weights = add_probabilities(weights, relatives, party)
+        weights = add_weights_cumm(weights, probabilities, party)
+    return weights
 
-    print(weights)
+if __name__ == "__main__":
+    save_model(main(), "model.csv")
 
-main()
-save_model(weights, "model.csv")
