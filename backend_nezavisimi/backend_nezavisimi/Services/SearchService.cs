@@ -2,7 +2,6 @@ using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
 
 namespace backend_nezavisimi.Services;
 
@@ -13,7 +12,7 @@ public class SearchService : ISearchService
         IWebDriver driver = new FirefoxDriver();
         
         var noviniBg = SearchNoviniBg(driver,3,searchParameters);
-        var pikBg = SearchPikBg(driver,3,searchParameters);
+            var pikBg = SearchPikBg(driver,3,searchParameters);
         var frogNews = SearchFrogNews(driver, 3, searchParameters);
         
         

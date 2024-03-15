@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend_nezavisimi.Controllers
 {
-    [Route("search/[controller]")]
+    [Route("search")]
     [ApiController]
     public class SearchController : ControllerBase
     {
@@ -15,7 +15,6 @@ namespace backend_nezavisimi.Controllers
         }
         
         [HttpPost]
-        [Route("search")]
         public Task<IActionResult> Search([FromBody]string model)
         {
             var result = _searchService.SearchArticles(model);

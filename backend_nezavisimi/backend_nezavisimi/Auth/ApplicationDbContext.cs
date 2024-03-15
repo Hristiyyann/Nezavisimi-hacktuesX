@@ -7,6 +7,7 @@ namespace backend_nezavisimi.Auth
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Party> Parties { get; set; }
+        public DbSet<Keyword> Keywords { get; set; }
 
         public ApplicationDbContext() { }
         
