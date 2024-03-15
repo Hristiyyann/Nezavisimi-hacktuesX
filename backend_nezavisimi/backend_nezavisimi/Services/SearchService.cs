@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using backend_nezavisimi.Auth;
 using backend_nezavisimi.Services.Interfaces;
 using OpenQA.Selenium;
@@ -10,20 +11,85 @@ public class SearchService : ISearchService
     public List<NewsModel> SearchArticles(string searchParameters)
     {
         IWebDriver driver = new FirefoxDriver();
-        
-        var noviniBg = SearchNoviniBg(driver,3,searchParameters);
-            var pikBg = SearchPikBg(driver,3,searchParameters);
-        var frogNews = SearchFrogNews(driver, 3, searchParameters);
-        
-        
         var newsModel = new List<NewsModel>();
+
+        bool isUrl = IsUrl(searchParameters);
+
+        if (isUrl)
+        {
+            bool isFromNoviniBg = IsUrlFromSpecificDomain(searchParameters, "novini.bg");
+            bool isFromPikBg = IsUrlFromSpecificDomain(searchParameters, "pik.bg");
+
+            if (isFromNoviniBg)
+            { 
+                var newsModelUrl = SearchNoviniBg(driver, 1, searchParameters, true);   
+                newsModel.Add(newsModelUrl.First());
+            }
+            else if (isFromPikBg)
+            {
+                var newsModelUrl = SearchPikBg(driver, 1, searchParameters,true);
+                newsModel.Add(newsModelUrl.First());
+            }
+        }
+        else
+        {
+            var noviniBg = SearchNoviniBg(driver,3,searchParameters);
+            var pikBg = SearchPikBg(driver,3,searchParameters);
+            var frogNews = SearchFrogNews(driver, 3, searchParameters);
+            
+            newsModel.AddRange(noviniBg);
+            newsModel.AddRange(pikBg);
+            newsModel.AddRange(frogNews);
+        }
+        
         return newsModel;
     }
 
-    private List<NewsModel> SearchNoviniBg(IWebDriver driver, int numberOfArticles, string searchParameters)
+    public static bool IsUrl(string input)
     {
+        string pattern = @"^(http|https|ftp)://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?$";
+        Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return regex.IsMatch(input);
+    }
+    
+    public static bool IsUrlFromSpecificDomain(string inputUrl, string domain)
+    {
+        try
+        {
+            Uri uri = new Uri(inputUrl);
+            return uri.Host.EndsWith(domain, StringComparison.OrdinalIgnoreCase);
+        }
+        catch (UriFormatException)
+        {
+            return false;
+        }
+    }
+
+    private List<NewsModel> SearchNoviniBg(IWebDriver driver, int numberOfArticles, string searchParameters, bool isUrl = false)
+    {
+        if (isUrl)
+        {
+            driver.Url = searchParameters;
+            var newsModelUrl = new List<NewsModel>();
+            Thread.Sleep(1000);
+            IWebElement buttonToAcceptCookiesUrl = driver.FindElement(By.XPath("//*[@id=\"onetrust-accept-btn-handler\"]"));
+            buttonToAcceptCookiesUrl.Click();
+
+            var articleTitle = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > h1"));
+            var articlePhoto = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > div.--image_holder > picture > img"));
+            var articleText = driver.FindElement(By.CssSelector("body > div.main-wrapper > main > main > section > div > article > section.openArticle__content.--spaced-bottom > p:nth-child(2)"));
+            var articleToAdd = new NewsModel()
+            {
+                Title = articleTitle.Text,
+                Link = searchParameters,
+                Photo = articlePhoto.GetAttribute("src"),
+                Text = articleText.Text
+            };
+            newsModelUrl.Add(articleToAdd);
+            return newsModelUrl;
+        }
         driver.Url = "https://novini.bg/search?txt=" + searchParameters;
-        var newsModels = new List<NewsModel>(); // Using a list for dynamic appending
+        var newsModels = new List<NewsModel>(); 
         Thread.Sleep(1000);
 
         IWebElement buttonToAcceptCookies = driver.FindElement(By.XPath("//*[@id=\"onetrust-accept-btn-handler\"]"));
@@ -49,8 +115,44 @@ public class SearchService : ISearchService
         return newsModels;
     }
 
-    private List<NewsModel> SearchPikBg(IWebDriver driver, int numberOfArticles, string searchParameters)
+    private List<NewsModel> SearchPikBg(IWebDriver driver, int numberOfArticles, string searchParameters, bool isUrl = false)
     {
+        if (isUrl)
+        {
+            driver.Url = searchParameters;
+            var newsModelUrl = new List<NewsModel>();
+            Thread.Sleep(1000);
+            IWebElement buttonToAcceptCookiesUrl = driver.FindElement(By.XPath("//*[@id=\"qc-cmp2-ui\"]/div[2]/div/button[2]"));
+            buttonToAcceptCookiesUrl.Click();
+
+            var articleTitle = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > h2"));
+            var articlePhoto = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > picture > img"));
+            var articleTextContainer = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.news-detail.left.w100"));
+            var paragraphs = articleTextContainer.FindElements(By.TagName("p"));
+            string articleText = "";
+            var excludeKeywords = new List<string> { "WINBET","efbet", "Следвайте ПИК" };
+            
+            foreach (var paragraph in paragraphs)
+            {
+                bool containsExcludeKeyword = excludeKeywords.Any(keyword => paragraph.Text.Contains(keyword));
+
+                if (!containsExcludeKeyword)
+                {
+                    articleText += paragraph.Text; 
+                }
+            }                
+            
+            var articleToAdd = new NewsModel()
+            {
+                Title = articleTitle.Text,
+                Link = searchParameters,
+                Photo = articlePhoto.GetAttribute("src"),
+                Text = articleText
+            };
+            newsModelUrl.Add(articleToAdd);
+            return newsModelUrl;
+        }
+        
         driver.Url = "https://pik.bg/" + searchParameters.Replace(" ", "-") + "-search.html";
         var newsModels = new List<NewsModel>(); 
         Thread.Sleep(1000);
@@ -77,7 +179,7 @@ public class SearchService : ISearchService
         return newsModels;
     }
     
-   private List<NewsModel> SearchFrogNews(IWebDriver driver, int numberOfArticles, string searchParameters)
+   private List<NewsModel> SearchFrogNews(IWebDriver driver, int numberOfArticles, string searchParameters, bool isUrl = false)
    {
        driver.Url = "https://frognews.bg/search/?search=" + searchParameters.Replace(" ", "+") +
                     "&submitsearch=&action=search";
