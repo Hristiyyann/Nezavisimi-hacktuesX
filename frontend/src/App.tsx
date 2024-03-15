@@ -2,10 +2,10 @@ import { ConfigProvider } from 'antd';
 import { Router } from 'components';
 import Context from 'contexts/AppContext';
 import { useEffect, useState } from 'react';
-import './styles/App.less';
 import componentConfiguration from 'styles/UIConfiguration';
+import './styles/App.less';
 
-const colorPrimary = '#50C7C7';
+const colorPrimary = '#143F68';
 
 function App() {
     const [accessToken, setAccessToken] = useState(window.localStorage.getItem('accessToken'));
@@ -20,7 +20,7 @@ function App() {
     return (
         <ConfigProvider
             componentSize = 'large'
-            theme = {{ token: { ...componentConfiguration, colorPrimary: '#50C7C7' }}}
+            theme = {{ token: { ...componentConfiguration, colorPrimary }}}
         >
             <Context.Provider
                 value = {{ 

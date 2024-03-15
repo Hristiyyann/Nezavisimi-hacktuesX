@@ -1,36 +1,51 @@
 
-import { BrowserRouter } from "react-router-dom";
-import { Route, Routes } from "react-router";
-import { useContext } from "react";
-import AppContext from "contexts/AppContext";
 import { AuthForm } from "components";
+import AppContext from "contexts/AppContext";
+import NewsDetails from "pages/NewsDetails/NewsDetails";
+import { useContext } from "react";
+import { Route, Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
 function Router() {
     const { accessToken } = useContext(AppContext);
-
+    console.log(!accessToken)
 	return (
 		<BrowserRouter>
-			<Routes>
+            <Routes>
 			{
-                !accessToken
-                ? 
-                <>
-                    <Route
-                        path = '/sign-in'
-                        element = {
-                            <AuthForm type = 'sign-in' />
-                        }
-                    />
-                    <Route
-                        path = '/sign-up'
-                        element = {
-                            <AuthForm type = 'sign-up'/>
-                        }
-                    />
-                </>
-				:
-                <></>
+                !accessToken ? (
+					<>
+                        <Route
+                            path = '/sign-in'
+                            element = { <AuthForm type = 'sign-in' />}
+                        />
+                        
+                        <Route
+                            path = '/sign-up'
+                            element = {<AuthForm type = 'sign-up'/>}
+                        />
+					</>
+				) 
+                : 
+                null
             }
+			{
+                accessToken ? (
+					<Route
+                        path = '/news'
+                        element = { <NewsDetails/> }
+                    />
+				) 
+                : null
+            }
+				<Route
+					path = "/"
+					element = {
+						accessToken 
+                        ? <NewsDetails />
+						: <AuthForm type = 'sign-in' />
+                    }
+				/>
 			</Routes>
 		</BrowserRouter>
 	);

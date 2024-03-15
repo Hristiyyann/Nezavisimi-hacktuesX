@@ -1,12 +1,14 @@
 import { Avatar, Dropdown } from 'antd';
-import classes from './style.module.less';
-import { useContext, useMemo, useState } from 'react';
 import KeywordsModal from 'components/KeywordsModal/KeywordsModal';
 import AppContext from 'contexts/AppContext';
+import { useContext, useMemo, useState } from 'react';
+import classes from './style.module.less';
+import { useNavigate } from 'react-router';
 
 function Profile() {
-    const { userName } = useContext(AppContext);
+    const { userName, setAccessToken } = useContext(AppContext);
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
     
     const handleModalClick = () => setModalOpen(prev => !prev);
 
@@ -17,6 +19,12 @@ function Profile() {
 
         return splittedName[0][0].toUpperCase() + splittedName[1][0].toUpperCase();
     }, [userName]);
+
+    const logOut = () => {
+        setAccessToken(null);
+        window.localStorage.removeItem('accessToken');
+        navigate('/sign-in');
+    }
 
     return (
         <>
@@ -29,6 +37,11 @@ function Profile() {
                             key: 'keywords', 
                             label: 'Ключови думи',
                             onClick: handleModalClick
+                        },
+                        { 
+                            key: 'logout', 
+                            label: 'Изход',
+                            onClick: logOut
                         }
                     ] 
                 }}
@@ -36,6 +49,7 @@ function Profile() {
                 <Avatar
                     size = {50}
                     className = {classes.avatar}
+                    style = {{ background: '#D9D9D9' }}
                 >
                     {initials}
                 </Avatar>
