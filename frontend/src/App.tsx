@@ -1,7 +1,7 @@
 import { ConfigProvider } from 'antd';
-import './styles/App.less';
-import NewsDetails from './pages/NewsDetails/NewsDetails';
 import { useEffect } from 'react';
+import NewsDetails from './pages/NewsDetails/NewsDetails';
+import './styles/App.less';
 
 const colorPrimary = '#50C7C7';
 
