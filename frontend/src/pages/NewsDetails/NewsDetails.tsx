@@ -3,13 +3,14 @@ import SearchTabs from "components/SearchTabs/SearchTabs";
 import AppContext from "contexts/AppContext";
 import NavbarContext from "contexts/NavbarContext";
 import useRequest from "hooks/useRequest";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Keyword } from "types";
+import { Keyword, Stats } from "types";
 import classes from './style.module.less';
 
-
 function NewsDetails() {
+    const [news, setNews] = useState<Stats[]>([]);
+    const [loading, setLoading] = useState(false);
     const { performer } = useRequest({ url: '/api/keyword', method: 'get' });
     const { setKeywords } = useContext(AppContext);
     const navigate = useNavigate();
@@ -31,9 +32,9 @@ function NewsDetails() {
     return (
         <NavbarContext>
             <div className = {classes.container}>
-                <SearchTabs/>
+                <SearchTabs {...{ setNews, setLoading }}/>
 
-                <NewsCardsList/>
+                <NewsCardsList {...{ stats: news, loading }}/>
             </div>
         </NavbarContext>
     )

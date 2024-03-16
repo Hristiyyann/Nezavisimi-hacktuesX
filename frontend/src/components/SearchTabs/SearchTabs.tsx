@@ -4,11 +4,17 @@ import classes from './style.module.less';
 import Search from "components/Search/Search";
 import Tags from "components/Tags/Tags";
 import useRequest from "hooks/useRequest";
+import { Stats } from "types";
 
-function SearchTabs() {
+type SearchTabsProps = {
+    setNews: React.Dispatch<React.SetStateAction<Stats[]>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function SearchTabs({ setNews, setLoading }: SearchTabsProps) {
     const [searchValue, setSearchValue] = useState<string>();
     const [activeTab, setActiveTab] = useState<'titleOrLink' | 'keywords'>('titleOrLink');
-    const { performer, getLoading } = useRequest({ url: `/api/search?SearchPreference=${searchValue}`, method: 'get' });
+    const { performer } = useRequest({ url: `/api/search?SearchPreference=${searchValue}`, method: 'get' });
 
     useEffect(() => {
         if (!searchValue) return;
@@ -18,9 +24,13 @@ function SearchTabs() {
 
     const handleSearch = async () => {
         if (!searchValue) return;
-        const data = await performer();
 
-        console.log(data);
+        setLoading(true);
+        const data = await performer<Stats[]>();
+        if (!data) return;
+
+        setNews(data);
+        setLoading(false);
     }
 
     const getTabComponent = () => {

@@ -1,34 +1,40 @@
-import NewsCard from "components/NewsCard/NewsCard";
-import classes from './style.module.less';
 import { Skeleton } from "antd";
-import { useState } from "react";
+import NewsCard from "components/NewsCard/NewsCard";
+import { Stats } from "types";
+import classes from './style.module.less';
 
-function NewsCardsList() {
-    const [loading, setLoading] = useState(false);
+type NewsCardsList = {
+    stats: Stats[];
+    loading: boolean;
+}
 
+function NewsCardsList({ stats, loading }: NewsCardsList) {
     return (
-        <div className = {classes.list}>
+        <div 
+            className = {classes.list}
+            style = {loading ? { gap: 50 } : undefined}
+        >
         {
             loading
             ?
-            <>
-                <Skeleton 
-                    loading 
-                    active 
-                    className = {classes.skeleton}
-                />
-
-                <Skeleton 
-                    loading 
-                    active 
-                    className = {classes.skeleton}
-                />
-            </>
+            <div className = {classes.skeletionList}>
+            {
+                [...Array(2).keys()].map(() => 
+                    <Skeleton 
+                        loading 
+                        active 
+                        className = {classes.item}
+                    />
+                )
+            }
+            </div>
             :
             <>
-                <NewsCard/>
-                <NewsCard/>
-                <NewsCard/>
+            {
+                stats.map(({ title, link, photo, scores }) => 
+                    <NewsCard {...{ title, link, photo, scores }}/>
+                )
+            }
             </>
         }
         </div>
