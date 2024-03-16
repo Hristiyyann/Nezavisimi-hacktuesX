@@ -23,16 +23,14 @@ party_to_transcript = {
 }
 
 def equal_within(num1, num2, limit):
-    if abs(num1 - num2) < limit:
+    if abs(num1 - num2) <= limit:
         return True
     return False
 
 def explain(results):
     
     scores = [ results.get("scores").get(x) for x in results.get("scores") ]  
-    old_scores = results["scores"]
     parties = [ x.name for x in os.scandir(DATA_FOLDER) ]
-    minscore = min(scores)
 
     tops = []
     bots = []
