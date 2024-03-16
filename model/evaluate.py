@@ -76,7 +76,10 @@ def evaluate(file):
         for word in frequencies:
             if word in weights:
                 errors[p_f.name] += frequencies[word] / frequencies["#"] * ((weights[word][p_f.name] - scores[p_f.name]) ** 2)
-        errors[p_f.name] = sqrt(errors[p_f.name]) / sqrt(scored_words)
+        if scored_words != 0:
+            errors[p_f.name] = sqrt(errors[p_f.name]) / sqrt(scored_words)
+        else:
+            errors[p_f.name] = 0
 
     result["scores"] = scores
     result["errors"] = errors

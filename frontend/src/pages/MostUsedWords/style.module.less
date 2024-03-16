@@ -1,55 +1,55 @@
 @import (reference) 'styles/theme.less';
 
 .container {
-    width: 1000px;
     display: flex;
-    justify-content: space-between;
-    background-color: white;
-    gap: @gap-sm;
-    padding: @padding-md @padding-lg;
-    box-shadow: @shadow-2;
-    border-radius: 10px;
-    transition: 0.5s all;
-}
-
-.container:hover {
-    box-shadow: @shadow-3;
-}
-
-.detailsContainer {
-    display: flex;
-    gap: 15px;
-}
-
-.values {
-    display: flex;
+    flex: 1;
     flex-direction: column;
-    gap: @gap-lg;
-    color: @text-color;
+    gap: @gap-md;
+    padding-top: 10px;
 
-    .label {
-        font-size: @font-size-lg;
-        color: @main-color;
-    }
-
-    .value {
-        font-size: @font-size-base;
-    }
-
-    .link {
-        font-size: @font-size-sm;
-        color: @primary-color;
+    .title {
+        align-self: center;
     }
 }
 
-@media screen and (max-width: 768px) {
-    .container {
-        width: 500px;
-    }
-}
+.parties {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 90px;
 
-@media screen and (max-width: 992px) {
-    .container {
-        width: 650px;
+    .partyCard {
+        display: flex;
+        flex: 0 0 25%;
+        gap: @gap-md;
+        background-color: white;
+        padding: 7px 10px;
+        box-shadow: @shadow-2;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.5s all;
+    }
+    
+    .partyCard:hover {
+        box-shadow: @shadow-3;
+    }
+    
+    
+    .words {
+        display: flex;
+        flex-direction: column;
+        gap: @gap-sm;
+
+        .value {
+            color: @text-color;
+            font-size: @font-size-lg;
+        }
+    }
+
+    img {
+        width: auto;
+        height: 100px;
     }
 }
