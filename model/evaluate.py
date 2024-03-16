@@ -6,6 +6,10 @@ from math import sqrt
 EVALUATION_FILE = ""
 MODEL_FILE = "./model.csv"
 DATA_DIR = "./data/"
+path = pathlib.Path(sys.argv[0])
+folder = str(path.parent) + "/"
+MODEL_FILE = folder + MODEL_FILE
+DATA_DIR = folder + DATA_DIR
 
 def load_model(file):
     weights = {}
@@ -79,11 +83,6 @@ def evaluate(file):
     return result
 
 if __name__ == "__main__":
-    print(sys.argv[0])
-    path = pathlib.Path(sys.argv[0])
-    folder = str(path.parent) + "/"
-    MODEL_FILE = folder + MODEL_FILE
-    DATA_DIR = folder + DATA_DIR
     if len(sys.argv) > 1:
         EVALUATION_FILE = sys.argv[1]
     else:

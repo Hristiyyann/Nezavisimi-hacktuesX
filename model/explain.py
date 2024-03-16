@@ -4,9 +4,14 @@ import pathlib
 import sys
 import math
 DATA_FOLDER = "data/"
-NEUTRAL = "Това че резултатите на всички партии са сравнително близо едни до други означава, че статията е по-скоро неутрална"
-TOP_ONE = "Има {0} вероятност статията да подкрепя повече вижданията на партия {1}"
-TOP_MULTIPLE = "Има {0} вероятност статията да подкрепя повече вижданията на партиите {1}"
+NEUTRAL = "Това че резултатите на всички партии са сравнително близо едни до други означава, че текстът е по-скоро неутрален"
+TOP_ONE = "Има {0} вероятност текстът да подкрепя повече вижданията на партия {1}"
+TOP_MULTIPLE = "Има {0} вероятност текстът да подкрепя повече вижданията на партиите {1}"
+
+path = sys.argv[0]
+path = pathlib.Path(path)
+folder = str(path.parent) + "/"
+DATA_FOLDER = folder + DATA_FOLDER
 
 party_to_transcript = {
     "BSP": "БСП",
@@ -73,10 +78,6 @@ def explain(results):
 
 
 if(__name__ == "__main__"):
-    path = sys.argv[0]
-    path = pathlib.Path(path)
-    folder = str(path.parent) + "/"
-    DATA_FOLDER = folder + DATA_FOLDER
     if len(sys.argv) < 2:
         print("Enter file name")
         exit
