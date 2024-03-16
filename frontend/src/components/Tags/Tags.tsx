@@ -3,24 +3,16 @@ import AppContext from 'contexts/AppContext';
 import { useContext, useEffect, useState } from 'react';
 
 type TagsProps = {
-    searchValue: string | undefined;
     setSearchValue: React.Dispatch<React.SetStateAction<string | undefined>>;
-    handleSearch: () => Promise<void>;
 }
 
-function Tags({ searchValue, setSearchValue, handleSearch }: TagsProps) {
+function Tags({ setSearchValue }: TagsProps) {
     const { keywords } = useContext(AppContext);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
     useEffect(() => {
         setSearchValue(selectedTags.join(' '));
     }, [selectedTags]);
-
-    useEffect(() => {
-        if (!searchValue) return;
-
-        handleSearch();
-    }, [searchValue]);
 
     const handleTagChange = (checked: boolean, tag: string) => {
         setSelectedTags(prev => {
