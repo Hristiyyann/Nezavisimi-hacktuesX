@@ -1,3 +1,5 @@
+@import (reference) 'styles/theme.less';
+
 * {
 	margin: 0;
 	padding: 0;
@@ -26,4 +28,16 @@ a {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+}
+
+.link {
+	color: white;
+	font-size: 16px;
+	padding: 12px;
+	cursor: pointer;
+	transition: 0.5s all;
+}
+
+.link:hover {
+	color: @secondary-color;
 }

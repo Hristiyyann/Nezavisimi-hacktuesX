@@ -21,26 +21,27 @@ function Navbar() {
             {
                 accessToken
                     ?
-                    <div>
+                    <div style={{ display: "flex", gap: "15px" }}>
                         <span
-                            className={classes.mostUsedLink}
+                            className='link'
                             onClick={() => navigate('/most-used-words')}
                         >
                             Интересни данни
                         </span>
+                        
                         <Profile />
                     </div>
                     :
                     <div className={classes.unauthorizedLinks}>
                         <span
                             onClick={() => navigate('/sign-in')}
-                            className={classes.link}
+                            className='link'
                         >
                             Вход
                         </span>
 
                         <span
-                            className={classes.link}
+                            className='link'
                             onClick={() => navigate('/sign-up')}
                         >
                             Регистрация
