@@ -88,11 +88,10 @@ public class SearchService : ISearchService
                 process.Start();
 
                 string result = process.StandardOutput.ReadToEnd();
-                string jsonString = result.Substring(result.IndexOf('\n') + 1)
-                    .Replace('\'', '\"');
+
                 try
                 {
-                    var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+                    var evaluationResult = JsonConvert.DeserializeObject<JObject>(result);
                     news.Scores = evaluationResult["scores"].ToObject<Dictionary<string,float>>();
                     news.Explanation = evaluationResult["explanation"].ToString();
                 }
@@ -187,11 +186,9 @@ public class SearchService : ISearchService
             process.Start();
 
             string result = process.StandardOutput.ReadToEnd();
-            string jsonString = result.Substring(result.IndexOf('\n') + 1)
-                .Replace('\'', '\"');
             try
             {
-                var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+                var evaluationResult = JsonConvert.DeserializeObject<JObject>(result);
                 news.Scores = evaluationResult["scores"].ToObject<Dictionary<string,float>>();
                 news.Explanation = evaluationResult["explanation"].ToString();
             }
@@ -228,11 +225,10 @@ public class SearchService : ISearchService
         process.Start();
 
         string result = process.StandardOutput.ReadToEnd();
-        string jsonString = result.Substring(result.IndexOf('\n') + 1)
-            .Replace('\'', '\"');
+
         try
         {
-            var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+            var evaluationResult = JsonConvert.DeserializeObject<JObject>(result);
             var newsModel = new NewsModel()
             {
                 Text = ownText,
