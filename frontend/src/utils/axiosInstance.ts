@@ -1,12 +1,9 @@
-import { message } from 'antd';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const returnResponse = (response: AxiosResponse) => response.data;
 
 const returnError = (error: AxiosError) => {
     const { status } = error;
-    
-    message.error('Something went wrong');
 
     return Promise.reject({
         status: status ? +status : 400,

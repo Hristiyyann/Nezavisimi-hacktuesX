@@ -19,8 +19,9 @@ function NewsCardsList({ stats, loading }: NewsCardsList) {
             ?
             <div className = {classes.skeletionList}>
             {
-                [...Array(2).keys()].map(() => 
-                    <Skeleton 
+                [...Array(2).keys()].map((key, index) => 
+                    <Skeleton
+                        key = {index}
                         loading 
                         active 
                         className = {classes.item}
