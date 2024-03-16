@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Scores, Stats } from 'types';
 import classes from './style.module.less';
 
-function NewsCard({ title, explanation, link, photo, scores }: Stats) {
+function NewsCard({ title, explanation, link, photo, source, scores }: Stats) {
     const [sortedStats, setSordedStats] = useState<Scores>(scores);
     const [step, setStep] = useState<boolean>(false);
 
@@ -54,6 +54,10 @@ function NewsCard({ title, explanation, link, photo, scores }: Stats) {
                     >
                         Линк към новината
                     </a>
+
+                    <div className = {classes.link}>
+                        Източник: {source}
+                    </div>
                 </div>
             }
             </div>
