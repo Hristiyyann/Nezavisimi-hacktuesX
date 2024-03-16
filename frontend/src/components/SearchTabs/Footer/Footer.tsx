@@ -32,7 +32,7 @@ function Footer({ handleSearch, setFilters, disableFilters, loading }: FooterPro
 
                     <InputNumber
                         min={1}
-                        max={5}
+                        max={3}
                         onChange={value => setFilters(prev => ({ ...prev, selectedNumberOfArticles: value }))}
                         defaultValue={1}
                     />
