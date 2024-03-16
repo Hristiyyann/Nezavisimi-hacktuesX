@@ -4,33 +4,8 @@ import { Stats } from 'types';
 import classes from './style.module.less';
 
 function NewsCard({ title, text, link, photo, scores }: Stats) {
-    const parties = [
-        {
-            color: 'blue',
-            name: 'Gerb',
-            percentage: 50
-        },
-        {
-            color: 'red',
-            name: 'Bsp',
-            percentage: 40
-        },
-        {
-            color: 'purple',
-            name: 'PP-DB',
-            percentage: 13
-        },
-        {
-            color: 'green',
-            name: 'Vazrashdane',
-            percentage: 12
-        },
-        {
-            color: 'aqua',
-            name: 'ITN',
-            percentage: 50
-        }
-    ];
+    console.log(scores)
+   
 
     return (
         <div className = {classes.container}>
@@ -63,8 +38,11 @@ function NewsCard({ title, text, link, photo, scores }: Stats) {
             
             <div style = {{ display: 'flex', flexDirection: 'column', gap: 15 }}>
             {
-                parties.map(({ name, color, percentage }) => 
-                    <PartyStats {...{ name, color, percentage }}/>
+                Object.keys(scores).map(party =>
+                    <PartyStats
+                        name = {party}
+                        percentage = {+(scores[party] * 100).toFixed(0)}
+                    />
                 )
             }
             </div>
