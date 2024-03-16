@@ -2,6 +2,7 @@
 import { AuthForm } from "components";
 import AppContext from "contexts/AppContext";
 import NewsDetails from "pages/NewsDetails/NewsDetails";
+import MostUsedWords from "pages/MostUsedWords/MostUsedWords";
 import { useContext } from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
@@ -13,7 +14,7 @@ function Router() {
 		<BrowserRouter>
             <Routes>
 			{
-                !accessToken ? (
+                !accessToken && (
 					<>
                         <Route
                             path = '/sign-in'
@@ -25,18 +26,23 @@ function Router() {
                             element = {<AuthForm type = 'sign-up'/>}
                         />
 					</>
-				) 
-                : 
-                null
+				)
             }
 			{
-                accessToken ? (
+                accessToken && (
 					<Route
                         path = '/news'
                         element = { <NewsDetails/> }
                     />
 				) 
-                : null
+            }
+            {
+                accessToken && (
+                    <Route
+                        path = '/most-used-words'
+                        element = { <MostUsedWords/> }
+                    />
+                )
             }
 				<Route
 					path = "/"

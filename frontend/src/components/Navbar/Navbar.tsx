@@ -8,39 +8,45 @@ import { useNavigate } from 'react-router';
 function Navbar() {
     const { accessToken } = useContext(AppContext);
     const navigate = useNavigate();
-    
+
     return (
-        <div className = {classes.navbar}>
-            <div className = {classes.nameContainer}>
-                <img 
-                    src = {newspaper} 
+        <div className={classes.navbar}>
+            <div className={classes.nameContainer}>
+                <img
+                    src={newspaper}
                 />
 
                 Независими
             </div>
-        {
-            accessToken
-            ? 
-            <div>
-                <Profile/>
-            </div>
-            : 
-            <div className = {classes.unauthorizedLinks}>
-                <span
-                    onClick = {() => navigate('/sign-in')} 
-                    className = {classes.link}
-                >
-                    Вход
-                </span>
+            {
+                accessToken
+                    ?
+                    <div>
+                        <span
+                            className={classes.mostUsedLink}
+                            onClick={() => navigate('/most-used-words')}
+                        >
+                            Интересни данни
+                        </span>
+                        <Profile />
+                    </div>
+                    :
+                    <div className={classes.unauthorizedLinks}>
+                        <span
+                            onClick={() => navigate('/sign-in')}
+                            className={classes.link}
+                        >
+                            Вход
+                        </span>
 
-                <span 
-                    className = {classes.link}
-                    onClick = {() => navigate('/sign-up')} 
-                >
-                    Регистрация
-                </span>
-            </div>
-        }
+                        <span
+                            className={classes.link}
+                            onClick={() => navigate('/sign-up')}
+                        >
+                            Регистрация
+                        </span>
+                    </div>
+            }
         </div>
     )
 }

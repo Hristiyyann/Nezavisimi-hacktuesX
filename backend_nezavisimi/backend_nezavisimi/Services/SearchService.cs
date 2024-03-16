@@ -25,6 +25,7 @@ public class SearchService : ISearchService
         {
             bool isFromNoviniBg = IsUrlFromSpecificDomain(searchParameters, "novini.bg");
             bool isFromPikBg = IsUrlFromSpecificDomain(searchParameters, "pik.bg");
+            bool isFromFrogNews = IsUrlFromSpecificDomain(searchParameters, "frognews.bg");
 
             if (isFromNoviniBg)
             { 
@@ -34,6 +35,11 @@ public class SearchService : ISearchService
             else if (isFromPikBg)
             {
                 var newsModelUrl = SearchPikBg(driver, 1, searchParameters,true);
+                newsModel.Add(newsModelUrl.First());
+            }
+            else if (isFromFrogNews)
+            {
+                var newsModelUrl = SearchFrogNews(driver, 1, searchParameters,true);
                 newsModel.Add(newsModelUrl.First());
             }
         }
@@ -203,6 +209,13 @@ public class SearchService : ISearchService
    {
        driver.Url = "https://frognews.bg/search/?search=" + searchParameters.Replace(" ", "+") +
                     "&submitsearch=&action=search";
+       if (isUrl)
+       {
+           var newsModelUrl = new List<NewsModel>();
+           var articleToAdd = ExtractTextFrogNews(driver, searchParameters);
+           newsModelUrl.Add(articleToAdd);
+           return newsModelUrl;
+       }
        var newsModels = new List<NewsModel>();
        Thread.Sleep(3000);
        
