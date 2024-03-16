@@ -11,7 +11,7 @@ namespace backend_nezavisimi.Services;
 
 public class SearchService : ISearchService
 {
-    public List<NewsModel> SearchArticles(string searchParameters)
+    public List<NewsModel> SearchArticles(string searchParameters, int? selectedNumberOfArticles, List<string>? selectedMedia)
     {
         FirefoxOptions options = new FirefoxOptions();
         options.SetPreference("javascript.enabled", false);
@@ -20,6 +20,92 @@ public class SearchService : ISearchService
         var newsModel = new List<NewsModel>();
 
         bool isUrl = IsUrl(searchParameters);
+        bool isMediaSelected = selectedMedia != null && selectedMedia.Count > 0;
+        bool isNumberOfArticlesSelected = selectedNumberOfArticles != null;
+
+        if (isMediaSelected)
+        {
+            bool isNoviniBgIncluded = selectedMedia.Contains("novini.bg");
+            bool isPikBgIncluded = selectedMedia.Contains("pik.bg");
+            bool isFrogNewsIncluded = selectedMedia.Contains("frognews.bg");
+            
+            if (isNoviniBgIncluded)
+            {
+                var noviniBg = SearchNoviniBg(driver,selectedNumberOfArticles ?? 2,searchParameters);
+                foreach (var news in noviniBg)
+                {
+                    if (news.Link != null)
+                    {
+                        var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+                        newsModel.Add(articleToAdd);
+                    }
+                }
+            }
+            
+            if (isPikBgIncluded)
+            {
+                var pikBg = SearchPikBg(driver,selectedNumberOfArticles ?? 2,searchParameters);
+                foreach (var news in pikBg)
+                {
+                    if (news.Link != null)
+                    {
+                        var articleToAdd = ExtractTextPikBg(driver, news.Link);
+                        newsModel.Add(articleToAdd);
+                    }
+                }
+            }
+            
+            if (isFrogNewsIncluded)
+            {
+                var frogNews = SearchFrogNews(driver,selectedNumberOfArticles ?? 2,searchParameters);
+                foreach (var news in frogNews)
+                {
+                    if (news.Link != null)
+                    {
+                        var articleToAdd = ExtractTextFrogNews(driver, news.Link);
+                        newsModel.Add(articleToAdd);
+                    }
+                }
+            }
+            foreach (var news in newsModel)
+            {
+                string tempFilePath = Path.GetTempFileName();
+                File.WriteAllText(tempFilePath, news.Text);
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "python3",
+                        Arguments = $"../../model/explain.py \"{tempFilePath}\"", 
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+
+                string result = process.StandardOutput.ReadToEnd();
+                string jsonString = result.Substring(result.IndexOf('\n') + 1)
+                    .Replace('\'', '\"');
+                try
+                {
+                    var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+                    news.Scores = evaluationResult["scores"].ToObject<Dictionary<string,float>>();
+                    news.Explanation = evaluationResult["explanation"].ToString();
+                }
+                catch (JsonReaderException e)
+                {
+                
+                }
+                process.WaitForExit();
+
+
+                File.Delete(tempFilePath);
+            }
+
+            return newsModel;
+        }
 
         if (isUrl)
         {
@@ -45,26 +131,25 @@ public class SearchService : ISearchService
         }
         else
         {
-            // var noviniBg = SearchNoviniBg(driver,3,searchParameters);
-            //  foreach (var news in noviniBg)
-            //  {
-            //      if (news.Link != null)
-            //      {
-            //          var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
-            //          newsModel.Add(articleToAdd);
-            //      }
-            //  }
-            // var pikBg = SearchPikBg(driver,3,searchParameters);
-            //  foreach (var news in pikBg)
-            //  {
-            //      if (news.Link != null)
-            //      {
-            //          var articleToAdd = ExtractTextPikBg(driver, news.Link);
-            //          newsModel.Add(articleToAdd);
-            //      }
-            //  }
-            // kupuvaite samo ot fast frog
-            var frogNews = SearchFrogNews(driver, 3, searchParameters);
+            var noviniBg = SearchNoviniBg(driver,selectedNumberOfArticles ?? 2,searchParameters);
+             foreach (var news in noviniBg)
+             {
+                 if (news.Link != null)
+                 {
+                     var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+                     newsModel.Add(articleToAdd);
+                 }
+             }
+            var pikBg = SearchPikBg(driver,selectedNumberOfArticles ?? 2,searchParameters);
+             foreach (var news in pikBg)
+             {
+                 if (news.Link != null)
+                 {
+                     var articleToAdd = ExtractTextPikBg(driver, news.Link);
+                     newsModel.Add(articleToAdd);
+                 }
+             }
+            var frogNews = SearchFrogNews(driver, selectedNumberOfArticles ?? 2, searchParameters);
             foreach (var news in frogNews)
             {
                 if (news.Link != null)
@@ -85,7 +170,7 @@ public class SearchService : ISearchService
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "python3",
-                    Arguments = $"../../model/evaluate.py \"{tempFilePath}\"", 
+                    Arguments = $"../../model/explain.py \"{tempFilePath}\"", 
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true
@@ -100,6 +185,7 @@ public class SearchService : ISearchService
             {
                 var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
                 news.Scores = evaluationResult["scores"].ToObject<Dictionary<string,float>>();
+                news.Explanation = evaluationResult["explanation"].ToString();
             }
             catch (JsonReaderException e)
             {
@@ -113,6 +199,44 @@ public class SearchService : ISearchService
 
         
         return newsModel;
+    }
+    
+    public NewsModel ModelByOwnText(string ownText)
+    {
+        string tempFilePath = Path.GetTempFileName();
+        File.WriteAllText(tempFilePath, ownText);
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "python3",
+                Arguments = $"../../model/explain.py \"{tempFilePath}\"", 
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+
+        string result = process.StandardOutput.ReadToEnd();
+        string jsonString = result.Substring(result.IndexOf('\n') + 1)
+            .Replace('\'', '\"');
+        try
+        {
+            var evaluationResult = JsonConvert.DeserializeObject<JObject>(jsonString);
+            var newsModel = new NewsModel()
+            {
+                Text = ownText,
+                Scores = evaluationResult["scores"].ToObject<Dictionary<string, float>>(),
+                Explanation = evaluationResult["explanation"].ToString()
+            };
+            return newsModel;
+        }
+        catch (JsonReaderException e)
+        {
+            return null;
+        }
     }
 
     #region Utils
