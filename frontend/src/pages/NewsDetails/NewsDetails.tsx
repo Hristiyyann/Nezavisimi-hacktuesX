@@ -32,7 +32,7 @@ function NewsDetails() {
     return (
         <NavbarContext>
             <div className = {classes.container}>
-                <SearchTabs {...{ setNews, setLoading }}/>
+                <SearchTabs {...{ setNews, loading, setLoading }}/>
 
                 <NewsCardsList {...{ stats: news, loading }}/>
             </div>

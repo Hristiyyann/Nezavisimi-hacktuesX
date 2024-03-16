@@ -12,7 +12,7 @@ function Search({ searchValue, setSearchValue }: SearchProps) {
             <Input
                 value = {searchValue}
                 onChange = {event => setSearchValue(event.target.value)}
-                style = {{ width: 550 }}
+                style = {{ width: 590 }}
             />
         </div>
     )
