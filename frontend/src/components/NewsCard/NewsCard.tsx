@@ -56,7 +56,7 @@ function NewsCard({ title, explanation, link, photo, scores }: Stats) {
             <div style = {{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div className = {classes.tooltip}>
                     <Tooltip
-                        trigger = {'hover'} 
+                        trigger = {'click'}
                         title = {explanation}
                     >
                         Какво означава?

@@ -1,21 +1,35 @@
-import { useEffect, useState } from "react";
-import Tab from "./Tab/Tab";
-import classes from './style.module.less';
+import { Input, message } from "antd";
 import Search from "components/Search/Search";
 import Tags from "components/Tags/Tags";
 import useRequest from "hooks/useRequest";
+import { useEffect, useState } from "react";
 import { Stats } from "types";
-import { Button, message } from "antd";
+import Footer from "./Footer/Footer";
+import Tab from "./Tab/Tab";
+import classes from './style.module.less';
+import qs from 'qs';
 
 type SearchTabsProps = {
+    loading: boolean;
     setNews: React.Dispatch<React.SetStateAction<Stats[]>>;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function SearchTabs({ setNews, setLoading }: SearchTabsProps) {
+type FiltersProps = {
+    selectedMedia: string[];
+    selectedNumberOfArticles: number | null;
+}
+
+function SearchTabs({ loading, setNews, setLoading }: SearchTabsProps) {
     const [searchValue, setSearchValue] = useState<string>();
+    const [filters, setFilters] = useState<FiltersProps>({ selectedMedia: [], selectedNumberOfArticles: 1 });
     const [activeTab, setActiveTab] = useState<'titleOrLink' | 'keywords' | 'ownText'>('titleOrLink');
-    const { performer } = useRequest({ url: `/api/search?SearchPreference=${searchValue}`, method: 'get' });
+    const { performer } = useRequest({ 
+        method: 'get',
+        url: activeTab === 'ownText'
+        ? `/api/search/ownText?SearchPreference=${searchValue}` 
+        : `/api/search?SearchPreference=${searchValue}&${qs.stringify(filters)}` 
+    });
 
     useEffect(() => {
         setSearchValue(undefined);
@@ -26,10 +40,11 @@ function SearchTabs({ setNews, setLoading }: SearchTabsProps) {
         if (!searchValue) return;
     
         setLoading(true);
+        setNews([]);
         const data = await performer<Stats[]>();
         if (!data) {
-            return;
-            message.error('Няма намерени статии');
+            setLoading(false);
+            return message.error('Няма намерени статии');
         }
 
         setNews(data);
@@ -41,9 +56,16 @@ function SearchTabs({ setNews, setLoading }: SearchTabsProps) {
             return (
                 <Search {...{ setSearchValue, searchValue }}/>
             )
-        } 
-
-        return <Tags {...{ setSearchValue }}/>
+        }
+        else if (activeTab === 'keywords') return <Tags {...{ setSearchValue }}/>
+        
+        return (
+            <Input.TextArea
+                style = {{ width: 590 }}
+                autoSize={{ minRows: 13, maxRows: 20 }}
+                onChange = {event => setSearchValue(event.target.value)}
+            />
+        )
     }
 
     return (
@@ -76,14 +98,10 @@ function SearchTabs({ setNews, setLoading }: SearchTabsProps) {
                 {getTabComponent()}
             </div>
 
-            <Button
-                
-                type = 'primary'
-                onClick = {handleSearch}
-                style = {{ alignSelf: 'center' }}
-            >
-                Търси
-            </Button>
+            <Footer
+                disableFilters = {activeTab === 'ownText'}
+                {...{ loading, setFilters, handleSearch }}
+            />
         </div>
     )
 }
