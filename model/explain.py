@@ -46,8 +46,6 @@ def explain(results):
         else:
             bots.append(results["scores"][party])
 
-    print(tops)
-
     if len(tops) == len(parties):
         results["explanation"] = NEUTRAL
         return results
