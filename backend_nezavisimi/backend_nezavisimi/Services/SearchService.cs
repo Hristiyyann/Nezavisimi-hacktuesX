@@ -200,7 +200,7 @@ public class SearchService : ISearchService
         return newsModel;
     }
     
-    public NewsModel ModelByOwnText(string ownText)
+    public List<NewsModel> ModelByOwnText(string ownText)
     {
         string tempFilePath = Path.GetTempFileName();
         File.WriteAllText(tempFilePath, ownText);
@@ -230,7 +230,7 @@ public class SearchService : ISearchService
                 Scores = evaluationResult["scores"].ToObject<Dictionary<string, float>>(),
                 Explanation = evaluationResult["explanation"].ToString()
             };
-            return newsModel;
+            return new List<NewsModel> {newsModel};
         }
         catch (JsonReaderException e)
         {
