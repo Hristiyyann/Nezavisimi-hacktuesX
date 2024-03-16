@@ -17,30 +17,22 @@ function NewsCardsList({ stats, loading }: NewsCardsList) {
         {
             loading
             ?
-            <>
-                <Skeleton 
-                    loading 
-                    active 
-                    className = {classes.skeleton}
-                />
-
-                <Skeleton 
-                    loading 
-                    active 
-                    className = {classes.skeleton}
-                />
-            </>
+            <div className = {classes.skeletionList}>
+            {
+                [...Array(2).keys()].map(() => 
+                    <Skeleton 
+                        loading 
+                        active 
+                        className = {classes.item}
+                    />
+                )
+            }
+            </div>
             :
             <>
             {
-                stats.map(stat => 
-                    <NewsCard
-                        title = {stat.title}
-                        link = {stat.link}
-                        photo = {stat.photo}
-                        text = {stat.text}
-                        scores = {stat.scores}
-                    />
+                stats.map(({ title, link, photo, scores }) => 
+                    <NewsCard {...{ title, link, photo, scores }}/>
                 )
             }
             </>

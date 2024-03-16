@@ -24,6 +24,10 @@ function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
     const { keywords, setKeywords } = useContext(AppContext);
     
     const handleAddKeyword = async () => {
+        if (!value) {
+            return onClose();
+        }
+
         const data = await performer<Keyword>({ keyword: value });
         if (!data) return;
 
@@ -36,7 +40,10 @@ function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
     };
 
     const handleDeleteKeyword = async (keyword: string) => {
-        await deletePerformer({ keyword });
+        const result = await deletePerformer({ keyword });
+        if (!result) return;
+
+        setKeywords(prev => prev.filter(({ name }) => name !== keyword));
     }
 
     return (

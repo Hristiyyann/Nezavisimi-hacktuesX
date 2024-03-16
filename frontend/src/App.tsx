@@ -3,14 +3,14 @@ import { Router } from 'components';
 import Context from 'contexts/AppContext';
 import { useEffect, useState } from 'react';
 import componentConfiguration from 'styles/UIConfiguration';
+import { Keyword } from 'types';
 import './styles/App.less';
 
 const colorPrimary = '#143F68';
 
 function App() {
     const [accessToken, setAccessToken] = useState(window.localStorage.getItem('accessToken'));
-    const [keywords, setKeywords] = useState<string[]>([]);
-    const [userName, setUserName] = useState<string>();
+    const [keywords, setKeywords] = useState<Keyword[]>([]);
 
     useEffect(() => {
         document.documentElement.style.setProperty('--primary-color', colorPrimary);
@@ -25,8 +25,7 @@ function App() {
             <Context.Provider
                 value = {{ 
                     accessToken, setAccessToken,
-                    keywords, setKeywords,
-                    userName, setUserName
+                    keywords, setKeywords
                 }}
             >
                 <Router/>

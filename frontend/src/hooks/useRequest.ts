@@ -14,7 +14,7 @@ function useRequest({ url, method }: useRequestProps) {
         method !== 'get' && setChangeLoading(true);
 
         try {
-            const result = await instance[method](url, body);
+            const result = await instance[method](url, method === 'delete' ? { data: body } : body);
             
             return result as T;
         }

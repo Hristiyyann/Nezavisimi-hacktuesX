@@ -28,7 +28,7 @@ function NewsDetails() {
 
         setKeywords(data);
     }
-    console.log(news);
+
     return (
         <NavbarContext>
             <div className = {classes.container}>
