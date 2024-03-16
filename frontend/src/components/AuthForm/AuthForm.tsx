@@ -39,7 +39,12 @@ function AuthForm({ type }: AuthFormProps) {
                 message
             }]}
         >
-            <Input/>
+        {
+            name === 'password' 
+            ? <Input.Password/>
+            : <Input/>
+
+        }
         </Form.Item>
     );
 
