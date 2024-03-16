@@ -33,13 +33,17 @@ function NewsCard({ title, explanation, link, photo, scores }: Stats) {
     return (
         <div className = {classes.container}>
             <div className = {classes.detailsContainer}>
+            {
+                photo &&
                 <Image
                     width = {280}
                     height = {180}
                     src = {photo}
                     preview = {false}
                 />
-
+            }
+            {
+                link &&
                 <div className = {classes.values}>
                     <div className = {classes.value}>{title}</div>
                 
@@ -51,6 +55,7 @@ function NewsCard({ title, explanation, link, photo, scores }: Stats) {
                         Линк към новината
                     </a>
                 </div>
+            }
             </div>
 
             <div style = {{ display: 'flex', flexDirection: 'column', gap: 10 }}>

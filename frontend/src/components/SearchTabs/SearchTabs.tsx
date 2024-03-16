@@ -34,6 +34,7 @@ function SearchTabs({ loading, setNews, setLoading }: SearchTabsProps) {
     useEffect(() => {
         setSearchValue(undefined);
         setLoading(false);
+        setNews([]);
     }, [activeTab]);
 
     const handleSearch = async () => {
@@ -62,7 +63,7 @@ function SearchTabs({ loading, setNews, setLoading }: SearchTabsProps) {
         return (
             <Input.TextArea
                 style = {{ width: 590 }}
-                autoSize={{ minRows: 13, maxRows: 20 }}
+                autoSize={{ minRows: 10, maxRows: 17 }}
                 onChange = {event => setSearchValue(event.target.value)}
             />
         )
