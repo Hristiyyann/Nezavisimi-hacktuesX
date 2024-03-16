@@ -36,6 +36,7 @@ public class SearchService : ISearchService
                     if (news.Link != null)
                     {
                         var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+                        articleToAdd.Source = "Novini.bg";
                         newsModel.Add(articleToAdd);
                     }
                 }
@@ -49,6 +50,7 @@ public class SearchService : ISearchService
                     if (news.Link != null)
                     {
                         var articleToAdd = ExtractTextPikBg(driver, news.Link);
+                        articleToAdd.Source = "Pik.bg";
                         newsModel.Add(articleToAdd);
                     }
                 }
@@ -62,6 +64,7 @@ public class SearchService : ISearchService
                     if (news.Link != null)
                     {
                         var articleToAdd = ExtractTextFrogNews(driver, news.Link);
+                        articleToAdd.Source = "Frognews.bg";
                         newsModel.Add(articleToAdd);
                     }
                 }
@@ -114,17 +117,20 @@ public class SearchService : ISearchService
 
             if (isFromNoviniBg)
             { 
-                var newsModelUrl = SearchNoviniBg(driver, 1, searchParameters, true);   
+                var newsModelUrl = SearchNoviniBg(driver, 1, searchParameters, true);
+                newsModel.First().Source = "Novini.bg";
                 newsModel.Add(newsModelUrl.First());
             }
             else if (isFromPikBg)
             {
                 var newsModelUrl = SearchPikBg(driver, 1, searchParameters,true);
+                newsModel.First().Source = "Pik.bg";
                 newsModel.Add(newsModelUrl.First());
             }
             else if (isFromFrogNews)
             {
                 var newsModelUrl = SearchFrogNews(driver, 1, searchParameters,true);
+                newsModel.First().Source = "Frognews.bg";
                 newsModel.Add(newsModelUrl.First());
             }
         }
@@ -136,6 +142,7 @@ public class SearchService : ISearchService
                  if (news.Link != null)
                  {
                      var articleToAdd = ExtractTextNoviniBg(driver, news.Link);
+                     articleToAdd.Source = "Novini.bg";
                      newsModel.Add(articleToAdd);
                  }
              }
@@ -145,6 +152,7 @@ public class SearchService : ISearchService
                  if (news.Link != null)
                  {
                      var articleToAdd = ExtractTextPikBg(driver, news.Link);
+                     articleToAdd.Source = "Pik.bg";
                      newsModel.Add(articleToAdd);
                  }
              }
@@ -154,6 +162,7 @@ public class SearchService : ISearchService
                 if (news.Link != null)
                 {
                     var articleToAdd = ExtractTextFrogNews(driver, news.Link);
+                    articleToAdd.Source = "Frognews.bg";
                     newsModel.Add(articleToAdd);
                 }
             }

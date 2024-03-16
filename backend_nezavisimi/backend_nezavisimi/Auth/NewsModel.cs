@@ -8,4 +8,5 @@ public class NewsModel
     public string? Text { get; set; }
     public Dictionary<string,float>? Scores { get; set; }
     public string? Explanation { get; set; }
+    public string? Source { get; set; }
 }
