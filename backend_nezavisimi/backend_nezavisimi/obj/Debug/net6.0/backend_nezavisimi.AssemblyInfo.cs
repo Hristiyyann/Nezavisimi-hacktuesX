@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("backend_nezavisimi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c34b3040b962327737a02f753fa9199aaa319a7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e28ad79dbfcde8c708e583fd47d64e98724059d5")]
 [assembly: System.Reflection.AssemblyProductAttribute("backend_nezavisimi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("backend_nezavisimi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

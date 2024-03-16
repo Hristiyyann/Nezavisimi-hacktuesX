@@ -14,18 +14,18 @@ ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") 
+            policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173") // Add the second site here
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowCredentials(); // Note: Allowing credentials means you cannot use a wildcard "*" origin.
         });
 });
+
 
 
 // For Entity Framework
