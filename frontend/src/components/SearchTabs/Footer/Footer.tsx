@@ -12,36 +12,37 @@ type FooterProps = {
 }
 
 function Footer({ handleSearch, setFilters, disableFilters, loading }: FooterProps) {
+    const justifyContent = disableFilters ? 'flex-end' : 'space-between';
     return (
-        <div className = {classes.footerContainer}>
-        {
-            !disableFilters && 
-            <div className = {classes.selects}>
-                <Select
-                    mode = 'multiple'
-                    style = {{ width: 220 }}
-                    placeholder = 'Изберете медия'
-                    onChange = {values => setFilters(prev => ({...prev, selectedMedia: values }))}
-                    options = {[
-                        { value: 'novini.bg', label: 'novini.bg' },
-                        { value: 'frognews.bg', label: 'frognews.bg' },
-                        { value: 'pik.bg', label: 'pik.bg' }
-                    ]}
-                />
+        <div className={classes.footerContainer} style={{ justifyContent }}>
+            {
+                !disableFilters &&
+                <div className={classes.selects}>
+                    <Select
+                        mode='multiple'
+                        style={{ width: 220 }}
+                        placeholder='Изберете медия'
+                        onChange={values => setFilters(prev => ({ ...prev, selectedMedia: values }))}
+                        options={[
+                            { value: 'novini.bg', label: 'novini.bg' },
+                            { value: 'frognews.bg', label: 'frognews.bg' },
+                            { value: 'pik.bg', label: 'pik.bg' }
+                        ]}
+                    />
 
-                <InputNumber 
-                    min = {1} 
-                    max = {5}
-                    onChange = {value => setFilters(prev => ({...prev, selectedNumberOfArticles: value }))}
-                    defaultValue = {1} 
-                />
-            </div>
-        }
+                    <InputNumber
+                        min={1}
+                        max={5}
+                        onChange={value => setFilters(prev => ({ ...prev, selectedNumberOfArticles: value }))}
+                        defaultValue={1}
+                    />
+                </div>
+            }
             <Button
-                disabled = {loading}
-                type = 'primary'
-                onClick = {handleSearch}
-                style = {{ alignSelf: 'flex-end' }}
+                disabled={loading}
+                type='primary'
+                onClick={handleSearch}
+                style={{ alignSelf: 'flex-end', justifySelf: 'flex-end' }}
             >
                 Търси
             </Button>
