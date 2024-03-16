@@ -21,7 +21,6 @@ public class SearchService : ISearchService
 
         bool isUrl = IsUrl(searchParameters);
         bool isMediaSelected = selectedMedia != null && selectedMedia.Count > 0;
-        bool isNumberOfArticlesSelected = selectedNumberOfArticles != null;
 
         if (isMediaSelected)
         {
