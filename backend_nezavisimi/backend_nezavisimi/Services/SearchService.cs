@@ -461,7 +461,6 @@ public class SearchService : ISearchService
        Thread.Sleep(1000);  // Consider using WebDriverWait for more reliable synchronization
 
        var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1")).Text;
-       var titleSpan = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1 > span")).Text; // Combining title parts
 
        var articlePhoto = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-share > div.article-image-blk > img")).GetAttribute("src");
 
