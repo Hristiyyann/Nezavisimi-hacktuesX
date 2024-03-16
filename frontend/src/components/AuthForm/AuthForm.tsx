@@ -79,8 +79,7 @@ function AuthForm({ type }: AuthFormProps) {
                         requiredMark = {false}
                         validateTrigger = 'onSubmit'
                     >
-                    { type === 'sign-up' && getFormInput('name', 'Име', 'Името е задължително') }
-                    { type === 'sign-up' && getFormInput('lastName', 'Фамилия', 'Фамилията е задължителна') }
+                    { type === 'sign-up' && getFormInput('username', 'Име', 'Името е задължително') }
                     { getFormInput('email', 'Имейл', 'Имейлът е задължителен') }
                     { getFormInput('password', 'Парола', 'Паролата е задължителна') }
 
