@@ -61,18 +61,18 @@ def explain(results):
         elif maxscore - avg < 0.15:
             results["explanation"] = TOP_MULTIPLE.format("средна", ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
-        elif maxscore - avg < 0.15:
+        elif maxscore - avg >= 0.15:
             results["explanation"] = TOP_MULTIPLE.format("голяма", ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
     elif len(tops) == 1:
         avg = sum(bots) / len(bots)
-        if maxscore - avg< 0.1:
+        if maxscore - avg < 0.1:
             results["explanation"] = TOP_ONE.format("малка", list(map(lambda x: party_to_transcript.get(x), tops))[0])
             return results
         elif maxscore - avg < 0.15:
             results["explanation"] = TOP_ONE.format("средна", list(map(lambda x: party_to_transcript.get(x), tops))[0])
             return results
-        elif maxscore - avg < 0.15:
+        elif maxscore - avg >= 0.15:
             results["explanation"] = TOP_ONE.format("голяма", list(map(lambda x: party_to_transcript.get(x), tops))[0])
     return results
 
