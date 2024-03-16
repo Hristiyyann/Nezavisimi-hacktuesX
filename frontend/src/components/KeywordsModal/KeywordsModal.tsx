@@ -1,4 +1,4 @@
-import { Input, Modal, Tag } from "antd";
+import { Input, Modal, Tag, Button } from "antd";
 import AppContext from "contexts/AppContext";
 import useRequest from "hooks/useRequest";
 import { useContext, useState } from "react";
@@ -52,14 +52,23 @@ function KeywordsModal({ isOpen, onClose }: KeywordsModalProps) {
             onCancel = {onClose}
             centered
             title = 'Ключови думи'
-            cancelButtonProps = {{
-                title: 'Затвори'
-            }}
-            okButtonProps = {{
-                title: 'Добави',
-                loading: changeLoading,
-                onClick: handleAddKeyword
-            }}
+            footer = {[
+                <Button
+                    key = 'cancel'
+                    onClick = {onClose}
+                >
+                    Затвори
+                </Button>,
+                <Button
+                    type = 'primary'
+                    key = 'submit'
+                    loading = {changeLoading}
+                    onClick = {handleAddKeyword}
+                >
+                    Добави
+                </Button>
+
+            ]}
         >
             <div className = {classes.modalContainer}>
                 <Input
