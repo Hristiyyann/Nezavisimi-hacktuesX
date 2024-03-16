@@ -1,5 +1,6 @@
 type Stats = {
     title: string;
+    explanation: string;
     link: string;
     photo: string;
     scores: Scores;

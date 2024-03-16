@@ -1,10 +1,10 @@
-import { Image } from 'antd';
+import { Image, Tooltip } from 'antd';
 import PartyStats from 'components/PartyStats/PartyStats';
 import { useEffect, useState } from 'react';
 import { Scores, Stats } from 'types';
 import classes from './style.module.less';
 
-function NewsCard({ title, link, photo, scores }: Stats) {
+function NewsCard({ title, explanation, link, photo, scores }: Stats) {
     const [sortedStats, setSordedStats] = useState<Scores>(scores);
     const [step, setStep] = useState<boolean>(false);
 
@@ -34,8 +34,8 @@ function NewsCard({ title, link, photo, scores }: Stats) {
         <div className = {classes.container}>
             <div className = {classes.detailsContainer}>
                 <Image
-                    width = {260}
-                    height = {160}
+                    width = {280}
+                    height = {180}
                     src = {photo}
                     preview = {false}
                 />
@@ -48,12 +48,20 @@ function NewsCard({ title, link, photo, scores }: Stats) {
                         href = {link} 
                         className = {classes.link}
                     >
-                        {link}
+                        Линк към новината
                     </a>
                 </div>
             </div>
 
             <div style = {{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div className = {classes.tooltip}>
+                    <Tooltip
+                        trigger = {'hover'} 
+                        title = {explanation}
+                    >
+                        Какво означава?
+                    </Tooltip>
+                </div>
             {
                 getCarouselPart()
             }

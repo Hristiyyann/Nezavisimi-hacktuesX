@@ -32,8 +32,8 @@ function NewsCardsList({ stats, loading }: NewsCardsList) {
             :
             <>
             {
-                stats.map(({ title, link, photo, scores }) => 
-                    <NewsCard {...{ title, link, photo, scores }}/>
+                stats.map(({ title, link, photo, scores, explanation }) => 
+                    <NewsCard {...{ title, link, photo, scores, explanation }}/>
                 )
             }
             </>
