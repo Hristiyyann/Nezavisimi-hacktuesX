@@ -11,18 +11,21 @@ folder = str(path.parent) + "/"
 MODEL_FILE = folder + MODEL_FILE
 DATA_DIR = folder + DATA_DIR
 
+PARTIES = []
+
 def load_model(file):
+    global PARTIES
     weights = {}
     with open(file, "r", encoding="utf-8") as f:
-        str = f.readline()
+        PARTIES = f.readline().strip("\n").split(", ")[1:]
         str = f.readline().strip("\n")
         while str:
             row = str.split(", ")
             if row[0] not in weights:
                 weights[row[0]] = {}
             c = 1
-            for p_f in os.scandir(DATA_DIR):
-                weights[row[0]][p_f.name] = float(row[c])
+            for p_f in PARTIES:
+                weights[row[0]][p_f] = float(row[c])
                 c += 1
             str = f.readline().strip("\n")
     return weights
@@ -31,8 +34,8 @@ def load_model(file):
 def save_model(weights, file):
     with open(file, "w", encoding="utf-8") as f:
         f.write("word")
-        for party_folder in os.scandir(DATA_DIR):
-            f.write(", " + party_folder.name)
+        for party in PARTIES:
+            f.write(", " + party)
         f.write("\n")
         for key in weights:
             f.write(key)
@@ -65,21 +68,21 @@ def evaluate(file):
         text = f.read()
     frequencies = relative_frequency(text)
     scores = {}
-    for p_f in os.scandir(DATA_DIR):
-        errors[p_f.name] = 0
-        scores[p_f.name] = 0
+    for p in PARTIES:
+        errors[p] = 0
+        scores[p] = 0
         scored_words = 0
         for word in frequencies:
             if word in weights:
-                scores[p_f.name] += frequencies[word] / frequencies["#"] * weights[word][p_f.name]
+                scores[p] += frequencies[word] / frequencies["#"] * weights[word][p]
                 scored_words += 1
         for word in frequencies:
             if word in weights:
-                errors[p_f.name] += frequencies[word] / frequencies["#"] * ((weights[word][p_f.name] - scores[p_f.name]) ** 2)
+                errors[p] += frequencies[word] / frequencies["#"] * ((weights[word][p] - scores[p]) ** 2)
         if scored_words != 0:
-            errors[p_f.name] = sqrt(errors[p_f.name]) / sqrt(scored_words)
+            errors[p] = sqrt(errors[p]) / sqrt(scored_words)
         else:
-            errors[p_f.name] = 0
+            errors[p] = 0
 
     result["scores"] = scores
     result["errors"] = errors
