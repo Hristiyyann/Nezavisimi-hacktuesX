@@ -10,16 +10,16 @@ const returnError = (error: AxiosError) => {
         success: false
     });
 }
- 
+
 async function applyAccessToken(config: InternalAxiosRequestConfig) {
     const accessToken = window.localStorage.getItem('accessToken');
     config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : "";
     return config;
-} 
+}
 
-const instance = axios.create({ baseURL: 'http://192.168.100.111:45855', withCredentials: true });
+const instance = axios.create({ baseURL: 'http://localhost:45855', withCredentials: true });
 
-instance.interceptors.response.use(returnResponse, returnError); 
+instance.interceptors.response.use(returnResponse, returnError);
 instance.interceptors.request.use(applyAccessToken);
 
 export default instance;

@@ -24,11 +24,9 @@ function SearchTabs({ loading, setNews, setLoading }: SearchTabsProps) {
     const [searchValue, setSearchValue] = useState<string>();
     const [filters, setFilters] = useState<FiltersProps>({ selectedMedia: [], selectedNumberOfArticles: 1 });
     const [activeTab, setActiveTab] = useState<'titleOrLink' | 'keywords' | 'ownText'>('titleOrLink');
-    const { performer } = useRequest({ 
-        method: 'get',
-        url: activeTab === 'ownText'
-        ? `/api/search/ownText?SearchPreference=${searchValue}` 
-        : `/api/search?SearchPreference=${searchValue}&${qs.stringify(filters)}` 
+    const { performer } = useRequest({
+        method: activeTab === 'ownText' ? 'post' : 'get',
+        url: activeTab === 'ownText' ? `/api/search/ownText` : `/api/search?SearchPreference=${searchValue}&${qs.stringify(filters)}`,
     });
 
     useEffect(() => {
@@ -39,10 +37,10 @@ function SearchTabs({ loading, setNews, setLoading }: SearchTabsProps) {
 
     const handleSearch = async () => {
         if (!searchValue) return;
-    
+
         setLoading(true);
         setNews([]);
-        const data = await performer<Stats[]>();
+        const data = await performer<Stats[]>(activeTab === 'ownText' ? { SearchPreference: searchValue } : undefined); 
         if (!data) {
             setLoading(false);
             return message.error('Няма намерени статии');
