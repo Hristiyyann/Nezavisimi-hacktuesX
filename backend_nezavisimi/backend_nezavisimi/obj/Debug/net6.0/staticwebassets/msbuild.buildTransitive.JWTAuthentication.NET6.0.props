@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/JWTAuthentication.NET6.0.props" />
-</Project>
