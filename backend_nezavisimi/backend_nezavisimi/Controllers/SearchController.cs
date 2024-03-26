@@ -21,9 +21,9 @@ namespace backend_nezavisimi.Controllers
             var result = _searchService.SearchArticles(model.SearchPreference,model.selectedNumberOfArticles,model.selectedMedia);
             return Task.FromResult<IActionResult>(Ok(result));
         }
-        [HttpGet]
+        [HttpPost]
         [Route("ownText")]
-        public Task<IActionResult> ModelByOwnText([FromQuery]SearchModel model)
+        public Task<IActionResult> ModelByOwnText([FromBody]SearchModel model)
         {
             var result = _searchService.ModelByOwnText(model.SearchPreference);
             return Task.FromResult<IActionResult>(Ok(result));

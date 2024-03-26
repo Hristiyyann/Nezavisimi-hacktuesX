@@ -117,20 +117,20 @@ public class SearchService : ISearchService
             if (isFromNoviniBg)
             { 
                 var newsModelUrl = SearchNoviniBg(driver, 1, searchParameters, true);
-                newsModel.First().Source = "Novini.bg";
                 newsModel.Add(newsModelUrl.First());
+                newsModel.First().Source = "Novini.bg";
             }
             else if (isFromPikBg)
             {
                 var newsModelUrl = SearchPikBg(driver, 1, searchParameters,true);
-                newsModel.First().Source = "Pik.bg";
                 newsModel.Add(newsModelUrl.First());
+                newsModel.First().Source = "Pik.bg";
             }
             else if (isFromFrogNews)
             {
                 var newsModelUrl = SearchFrogNews(driver, 1, searchParameters,true);
+newsModel.Add(newsModelUrl.First());
                 newsModel.First().Source = "Frognews.bg";
-                newsModel.Add(newsModelUrl.First());
             }
         }
         else
@@ -277,7 +277,6 @@ public class SearchService : ISearchService
         }
         driver.Url = "https://novini.bg/search?txt=" + searchParameters;
         var newsModels = new List<NewsModel>(); 
-        Thread.Sleep(1000);
         
         for (int i = 0; i < numberOfArticles; i++)
         {
@@ -311,7 +310,6 @@ public class SearchService : ISearchService
 
         driver.Url = "https://pik.bg/" + searchParameters.Replace(" ", "-") + "-search.html";
         var newsModels = new List<NewsModel>(); 
-        Thread.Sleep(1000);
 
         for (int i = 0; i < numberOfArticles; i++)
         {
@@ -345,7 +343,6 @@ public class SearchService : ISearchService
            return newsModelUrl;
        }
        var newsModels = new List<NewsModel>();
-       Thread.Sleep(3000);
        
        for (int i = 0; i < numberOfArticles; i++)
        {
@@ -376,7 +373,6 @@ public class SearchService : ISearchService
    private NewsModel ExtractTextNoviniBg(IWebDriver driver, string searchParameters)
    {
        driver.Url = searchParameters;
-       Thread.Sleep(3000);
 
        IWebElement articlePhoto = null;
        var articleContent = new List<string>();
@@ -421,7 +417,6 @@ public class SearchService : ISearchService
    private NewsModel ExtractTextPikBg(IWebDriver driver, string searchParameters)
    {
        driver.Url = searchParameters;
-       Thread.Sleep(1000);
 
        var articleTitle = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > h2"));
        var articlePhoto = driver.FindElement(By.CssSelector("body > main > div.container-wrap > div > div > div.col-xl-9.col-lg-8.news-view > div.top-news.left.w100 > picture > img"));
@@ -454,7 +449,6 @@ public class SearchService : ISearchService
    private NewsModel ExtractTextFrogNews(IWebDriver driver, string searchParameters)
    {
        driver.Url = searchParameters;
-       Thread.Sleep(1000);  // Consider using WebDriverWait for more reliable synchronization
 
        var articleTitle = driver.FindElement(By.CssSelector("body > div.content > div > div > article > div.article-image-title > h1")).Text;
 
