@@ -41,6 +41,7 @@ def explain(results):
     tops = []
     bots = []
     maxscore = max(scores)
+    minscore = min(scores)
     if maxscore == 0:
         results["explanation"] = NEUTRAL
         return results
@@ -57,24 +58,26 @@ def explain(results):
         return results
     elif len(tops) > 1:
         avg = sum(bots) / len(bots)
-        if maxscore - avg < 0.1:
+        SE = results["errors"][tops[0]]
+        if maxscore - minscore < SE * 2:
             results["explanation"] = TOP_MULTIPLE.format(LOW, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
-        elif maxscore - avg < 0.15:
+        elif maxscore - avg < SE * 3:
             results["explanation"] = TOP_MULTIPLE.format(MEDIUM, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
-        elif maxscore - avg >= 0.15:
+        elif maxscore - avg >= SE * 3:
             results["explanation"] = TOP_MULTIPLE.format(HIGH, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
     elif len(tops) == 1:
         avg = sum(bots) / len(bots)
-        if maxscore - avg < 0.1:
+        SE = results["errors"][tops[0]]
+        if maxscore - minscore < SE * 2:
             results["explanation"] = TOP_ONE.format(LOW, list(map(lambda x: party_to_transcript.get(x), tops))[0])
             return results
-        elif maxscore - avg < 0.15:
+        elif maxscore - minscore < SE * 3:
             results["explanation"] = TOP_ONE.format(MEDIUM, list(map(lambda x: party_to_transcript.get(x), tops))[0])
             return results
-        elif maxscore - avg >= 0.15:
+        elif maxscore - minscore >= SE * 3:
             results["explanation"] = TOP_ONE.format(HIGH, list(map(lambda x: party_to_transcript.get(x), tops))[0])
     return results
 
