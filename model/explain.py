@@ -36,41 +36,45 @@ def equal_within(num1, num2, limit):
 def explain(results):
     
     scores = [ results.get("scores").get(x) for x in results.get("scores") ]  
-    N_parties = len([ x for x in os.scandir(DATA_FOLDER) ])
+    parties = [ x for x in results.get("scores")]
+
 
     tops = []
     bots = []
     maxscore = max(scores)
     minscore = min(scores)
+    min_error = results.get("errors").get(list(filter(lambda x: results["scores"][x] == minscore, results["errors"]))[0])
+    max_error = results.get("errors").get(list(filter(lambda x: results["scores"][x] == maxscore, results["errors"]))[0])
+
     if maxscore == 0:
-        results["explanation"] = NEUTRAL
+        results["explanation"] = NEUTRAL#.encode("cp866")
         return results
     
     # GROUP TOP RESULTS
     for party in results["scores"]:
-        if equal_within(results["scores"][party], maxscore, results["errors"][party]):
+        if equal_within(results["scores"][party], maxscore, results["errors"][party] + max_error):
             tops.append(party)
         else:
             bots.append(results["scores"][party])
 
-    if len(tops) == N_parties:
-        results["explanation"] = NEUTRAL
+    if len(tops) == len(parties):
+        results["explanation"] = NEUTRAL#.encode("cp866")
         return results
     elif len(tops) > 1:
         avg = sum(bots) / len(bots)
-        SE = results["errors"][tops[0]]
+        SE = results["errors"][tops[0]] + min_error
         if maxscore - minscore < SE * 2:
             results["explanation"] = TOP_MULTIPLE.format(LOW, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
-        elif maxscore - avg < SE * 3:
+        elif maxscore - minscore < SE * 3:
             results["explanation"] = TOP_MULTIPLE.format(MEDIUM, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
-        elif maxscore - avg >= SE * 3:
+        elif maxscore - minscore >= SE * 3:
             results["explanation"] = TOP_MULTIPLE.format(HIGH, ", ".join(list(map(lambda x: party_to_transcript.get(x), tops))))
             return results
     elif len(tops) == 1:
         avg = sum(bots) / len(bots)
-        SE = results["errors"][tops[0]]
+        SE = results["errors"][tops[0]] + min_error
         if maxscore - minscore < SE * 2:
             results["explanation"] = TOP_ONE.format(LOW, list(map(lambda x: party_to_transcript.get(x), tops))[0])
             return results
@@ -79,6 +83,7 @@ def explain(results):
             return results
         elif maxscore - minscore >= SE * 3:
             results["explanation"] = TOP_ONE.format(HIGH, list(map(lambda x: party_to_transcript.get(x), tops))[0])
+
     return results
 
 
@@ -86,4 +91,5 @@ if(__name__ == "__main__"):
     if len(sys.argv) < 2:
         print("Enter file name")
         exit
-    print(explain(evaluate(sys.argv[1])))
+    result = explain(evaluate(sys.argv[1]))
+    print(result.__str__())
